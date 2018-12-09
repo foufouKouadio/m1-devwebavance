@@ -1,0 +1,14 @@
+{
+  "name": "m1-devwebavance",
+  "version": "1.0.0",
+  "description": "Slides M1 Développement Web Avancé",
+  "main": "index.js",
+  "scripts": {
+    "build": "node asciidoctor-revealjs.js"
+  },
+  "author": "Julien Lafourcade",
+  "license": "ISC",
+  "dependencies": {
+    "asciidoctor-reveal.js": "^1.1.3"
+  }
+}
