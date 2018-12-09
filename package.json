@@ -2,7 +2,6 @@
   "name": "m1-devwebavance",
   "version": "1.0.0",
   "description": "Slides M1 Développement Web Avancé",
-  "main": "index.js",
   "scripts": {
     "build": "node asciidoctor-revealjs.js"
   },
