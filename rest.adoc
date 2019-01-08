@@ -1,0 +1,100 @@
+= REST
+
+== Representational state transfer
+
+* Mode de communication client-serveur sur HTTP
+* Taillé pour de la communication Machine-To-Machine
+* Ensemble de règle et de pratiques qui ont pour but de standardiser les échanges
+* Indépendances vis-à-vis de quelconque langage d'implémentation sous-jacent
+
+== Representational state transfer
+
+* Plus léger que le protocole SOAP, il s'est imposé comme un des standards actuels
+* D'autres protocoles de communication Machine-To-Machine existent
+  - gRPC
+* Pas de conservation de l'état entre deux requêtes
+
+== HTTP(S)
+
+* Protocole de communication de niveau applicatif (Niveau 7) se basant sur la couche de transport TCP (Niveau 4)
+* Port 80 : HTTP
+* Port 443 : HTTPS
+* Le client utilise des commmandes (ou méthodes ou verbes) prédéfinies dans le protocole pour échanger avec le serveur
+
+== Requête HTTP
+:plantuml-server-url: http://www.plantuml.com/plantuml
+[plantuml,http-request-response]
+----
+Client -> Serveur: HTTP Request
+Client <- Serveur: HTTP Response
+----
+
+== Anatomie d'une requête HTTP
+
+|=== 
+
+| Commande | GET / HTTP/1.1  
+
+| Request headers | Host: example.com
+
+| Body (Optionnel) | Ce qu'on veut envoyer au serveur
+
+|=== 
+
+== Requête HTTP
+
+:source-highlighter: highlightjs
+:source-language: bash
+
+[source]
+----
+$ telnet example.com 80
+Trying 2606:2800:220:1:248:1893:25c8:1946...
+Connected to example.com.
+Escape character is '^]'.
+GET / HTTP/1.1
+Host: example.com
+----
+
+
+== Anatomie d'une réponse HTTP
+
+== La philosophie de REST
+
+* Exposer des ressources (entités ?) sur des URLs immutables accessibles selon une ou plusieurs méthodes
+
+== Les verbes
+
+* Les verbes donnent une sémantique à la requête
+* Il y en a 9 au total
+* 4 "principaux" sont les plus utilisés
+  - GET
+  - POST
+  - PUT
+  - DELETE
+
+== GET
+
+== POST
+
+== PUT
+
+== DELETE
+
+== Les codes de statut
+
+* Les codes sont des indications sur les résultats des traitements réalisés par le serveur
+* Les codes de statut sont standardisés 
+  - Il est fortement déconseillé d'utiliser des codes de statuts personnalisés
+
+https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+
+== Les principaux types de headers
+
+== Les mediatypes
+
+== HATEOAS
+
+== La documentation des APIS
+
+

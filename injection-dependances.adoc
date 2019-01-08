@@ -1,0 +1,18 @@
+= Injection de dépendances
+
+== Dépendance ?
+:plantuml-server-url: http://www.plantuml.com/plantuml
+[plantuml]
+----
+ProductController o-- ProductService
+----
+
+
+== Injection ? 
+
+[plantuml, sample-plantuml-diagram, alt="Class diagram", width=250, height=118]
+----
+class BlockProcessor
+class PlantUmlBlock
+BlockProcessor <|-- PlantUmlBlock
+----

@@ -5,3 +5,17 @@
 * Foo
 * Bar
 * World
+
+
+== Slide with code 
+
+:source-highlighter: highlightjs
+:source-language: java
+
+[source]
+----
+public void setAttributes(Attributes attributes) {
+    this.options.put(ATTRIBUTES, attributes.map());
+}
+----
+
