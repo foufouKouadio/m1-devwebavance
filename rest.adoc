@@ -75,11 +75,129 @@ Host: example.com
 
 == GET
 
+* Utilisé pour de la consultation des ressources
+* Permet de récupérer une entité simple ou une liste d'entités
+* Une requête GET n'a pas de body
+* Les informations sont envoyées soit par 
+  - des "path params" : composants du chemin qui seront récupérés par le parsing de ce dernier
+  - des "query params" : liste de paires clé/valeur se trouvant dans l'url aprs le "?"
+
+== GET (quelques exemples)
+
+* La liste des étudiants de l'université
+
+[source]
+----
+GET https://monserveur.com/etudiants
+----
+
+* La liste des étudiants du M1 Informatique
+
+[source]
+----
+GET https://monserveur.com/etudiants?promo=M1INFO
+----
+
+* L'étudiant dont le numéro est est 254633
+
+[source]
+----
+GET https://monserveur.com/etudiants/254633
+----
+
 == POST
+
+* Intention d'ajouter une nouvelle ressource dans le système
+* Les informations permettant de créer la ressource se trouvent dans le body de la requête
+* Les "path params" et "query params" seront envoyés mais il doit y avoir une sémantique qui se justifie
+* La réponse à la requête peut contenir le résultat de la création par l'application
+* Le format du body doit être précisé en tant que header pour que l'application puisse correctement désérialiser les données envoyées 
+
+== POST (exemple)
+
+[source]
+----
+POST https://monserveur.com/etudiants
+----
+
+* Request Body
+
+:source-highlighter: highlightjs
+:source-language: json
+
+[source]
+----
+{
+    "nom": "John",
+    "prenom": "Doe",
+}
+----
+
+* Response Body
+
+[source]
+----
+{
+    "id": 1895, 
+    "nom": "John",
+    "prenom": "Doe",
+    "villeDeNaissance": "Non Précisée"
+}
+----
 
 == PUT
 
+* Intention de modifier une ressource existante
+* L'identification de la ressource à modifier est en général contenue dans l'URL
+* Le body de la requête contient les champs modifiés de la ressource
+* La réponse à la requête peut contenir le résultat de la modification de la ressource par l'application
+
+== PUT (exemple)
+
+[source]
+----
+PUT https://monserveur.com/etudiants/1895
+----
+
+* Request Body
+
+:source-highlighter: highlightjs
+:source-language: json
+
+[source]
+----
+{
+    "nom": "John",
+    "prenom": "Doe",
+    "villeDeNaissance": "New York"
+}
+----
+
+* Response Body
+
+[source]
+----
+{
+    "id": 1895, 
+    "nom": "John",
+    "prenom": "Doe",
+    "villeDeNaissance": "New York"
+}
+----
+
 == DELETE
+
+* Intention de supprimer une ressource
+* La requête n'a pas de body
+* La réponse n'a pas de body non plus
+* L'identification de la ressource à supprimer est obligatoirement contenue dans l'URL
+
+== DELETE (exemple)
+
+[source]
+----
+DELETE https://monserveur.com/etudiants/1895
+----
 
 == Les codes de statut
 
@@ -88,6 +206,39 @@ Host: example.com
   - Il est fortement déconseillé d'utiliser des codes de statuts personnalisés
 
 https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+
+== Les codes de statut (2XX)
+
+* Codes de retour utilisés en cas de succès
+* La requête a pu être traitée sans erreur
+* Les plus connus
+  - 200 OK: le plus neutre 
+  - 201 CREATED: utile lors de la création d'une ressource en POST
+  - 204 NO CONTENT : utile en POST ou PUT si le serveur ne renvoie rien dans le body
+
+== Les codes de statut (3XX)
+
+* Indiquent en général une redirection qui peut-être permanente ou temporaire
+* La réponse contient un header "Location" qui précise la nouvelle URL de la ressource
+* Les plus connus
+  - 300 Multiple Choices: la requête ne précisaient pas le format de réponse souhaité
+  - 307 Temporary Redirect : le client devrait aller voir ailleurs mais quand repasser par là la prochaine fois
+
+== Les codes de statut (4XX)
+
+* Indiquent une erreur lors du traitement de la requête par l'application
+  - il s'agit plus d'une erreur "métier"
+* Les plus connus
+  - 400 Bad Request : le client a envoyé une requête incomplète ou au mauvais format  
+  - 403 Forbidden : le client n'a pas les droits pour accéder à la ressource
+  - 404 Not Found : la ressource demandée n'existe pas ou plus
+
+== Les codes de statut (5XX)
+
+* Indiquent une erreur technique qui n'est pas dans le fonctionnement standard de l'application
+* Les plus connus
+  - 500 Internal Server Error : peut être levé par une exception non catchée coté serveur
+  - 503 Service Unavailable : erreur potentiellement temporaire (surcharge par exemple)
 
 == Les principaux types de headers
 
