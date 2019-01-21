@@ -14,6 +14,10 @@
   - gRPC
 * Pas de conservation de l'état entre deux requêtes
 
+== La philosophie de REST
+
+* Exposer des ressources (entités ?) sur des URLs immutables accessibles selon une ou plusieurs méthodes
+
 == HTTP(S)
 
 * Protocole de communication de niveau applicatif (Niveau 7) se basant sur la couche de transport TCP (Niveau 4)
@@ -41,7 +45,7 @@ Client <- Serveur: HTTP Response
 
 |=== 
 
-== Requête HTTP
+== Réponse HTTP
 
 :source-highlighter: highlightjs
 :source-language: bash
@@ -59,11 +63,58 @@ Host: example.com
 
 == Anatomie d'une réponse HTTP
 
-== La philosophie de REST
+|=== 
 
-* Exposer des ressources (entités ?) sur des URLs immutables accessibles selon une ou plusieurs méthodes
+| Reponse headers | content-encoding: gzip
 
-== Les verbes
+| Body (Optionnel) | Ce que renvoie le serveur
+
+|=== 
+
+== JSON
+
+* Javascript Object Notation
+* Format d'échange de données standardisé
+  - Dépasse les frontières du JS depuis lontemps
+* Deux types de structures de données
+  - collection (non ordonnée) de paires clé/valeur
+  - liste ou tableau (ordonnés) de valeurs ou d'objets
+
+== JSON
+
+* Les types primitifs
+  - string
+  - number
+  - boolean
+  - object
+  - array
+  - null
+
+== JSON (Exemple)
+
+:source-highlighter: highlightjs
+:source-language: json
+
+[source]
+---- 
+
+{
+    "id" : "111",
+    "nom" : "Doe",
+    "prenom" : "John",
+    "adresses" : [
+        { 
+            "rue" : "2 avenue Foch",
+            "cp" : "64000",
+            "ville" : "Pau"
+        }
+        ....
+    ]
+}
+
+----
+
+== Les verbes HTTP
 
 * Les verbes donnent une sémantique à la requête
 * Il y en a 9 au total
@@ -199,6 +250,13 @@ PUT https://monserveur.com/etudiants/1895
 DELETE https://monserveur.com/etudiants/1895
 ----
 
+== OPTIONS
+
+* Permet de demander au serveur la faisabilité d'une requête sur une ressource
+  - Est-ce que la méthode POST est supportée pour cette ressource ? 
+  - Sous quels formats peut-on récupérer la ressource ? 
+* Utile pour faire des prévérifications
+
 == Les codes de statut
 
 * Les codes sont des indications sur les résultats des traitements réalisés par le serveur
@@ -242,10 +300,19 @@ https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
 
 == Les principaux types de headers
 
-== Les mediatypes
+* Request headers 
+  - Host: developer.mozilla.org
+  - User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
+  - Accept: application/json
+  - Content-Type: application/json
+  - Cookie: name=value; name2=value2; name3=value3
 
-== HATEOAS
+== Les principaux types de headers
 
-== La documentation des APIS
+* Response headers 
+  - Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure
+  - Content-Type: application/json
+  - Access-Control-Allow-Origin: *.univ-pau.fr
+  - Server: Apache
 
 
