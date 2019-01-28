@@ -21,4 +21,5 @@ asciidoctor.convertFile('micronaut-rest.adoc', options);
 // Copie des assets nécessaires
 const fs = require('fs-extra')
 fs.copySync('node_modules/reveal.js', 'output/node_modules/reveal.js')
+fs.copySync('.nojekyll', 'output/.nojekyll')
 
