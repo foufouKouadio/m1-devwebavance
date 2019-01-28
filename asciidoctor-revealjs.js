@@ -23,3 +23,6 @@ const fs = require('fs-extra')
 fs.copySync('node_modules/reveal.js', 'output/node_modules/reveal.js')
 fs.copySync('.nojekyll', 'output/.nojekyll')
 
+var compilePagesAttributes = {}
+var compilePagesOptions = {safe: 'safe', attributes: attributes, to_dir: 'output'};
+asciidoctor.convertFile('tp1.adoc', compilePagesOptions); 

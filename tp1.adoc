@@ -1,0 +1,59 @@
+= TP1 - Prise en main des outils
+
+== Gitlab
+
+Commencez par vous connecter à la plateforme https://git.univ-pau.fr. 
+
+Ajoutez votre clé SSH à votre compte (https://docs.gitlab.com/ce/ssh/). Si vous n'avez de clé SSH, vous devrez une paire clé publique / clé privée. Attention vous devez ajouter votre clé publique (votre clé doit rester secrète d'où son nom).
+
+Un des deux binômes devra créer un projet qui servira pour la suite du TP1 (https://docs.gitlab.com/ce/gitlab-basics/create-project.html)
+
+Il donnera des droits à l'autre binôme du groupe. (https://docs.gitlab.com/ce/user/project/members/)
+
+== Git
+
+Maintenant que le projet est créé sur gitlab, on peut y déposer du code à l'aide de Git. Pour les novices de git, il faudra lire la page suivante qui explique les commandes de base : http://rogerdudler.github.io/git-guide/index.fr.html
+
+Les deux binomes pourront ensuite s'exercer à collaborer sur le projet en y déposant chancun son tour des fichiers (de simples fichiers texte suffiront)
+
+== Gradle 
+
+Gradle est un outil dédié à la construction de projets Java. Il facilite la gestion des dépendances, la portabilité et optimise la compilation. 
+
+Pour installer Gradle dans son HOME, il faut commencer par installer SDKMAN (il sera utile pour d'autres outils que Gradle) (https://sdkman.io/install)
+
+L'installation de Gradle se faite ensuite avec une simple commande
+
+[source,bash]
+----
+sdk install gradle
+----
+
+Il faut ensuite retourner dans le répertoire du projet gi créé à l'étape précédente. C'est dans ce dernier qu'il faut initialiser le premier projet gradle à l'aide de la commande suivante : 
+
+[source,bash]
+----
+gradle init --type java-application
+----
+
+Observer les fichiers générés (Astuce: git donnera la liste des fichiers qui viennent d'être créés), en particulier le fichier build.gradle contenant toutes les instructions de construction. 
+
+Le projet pourra être éxécuté grâce à la commande suivante : 
+
+[source,bash]
+----
+gradle run
+----
+
+Observer le résultat ainsi que celui de la commande suivante : 
+
+[source,bash]
+----
+gradle run --console=plain
+----
+
+Avant de commiter le projet, il faut créer un fichier .gitignore permettant d'ignorer à tout jamais certains fichiers comme le répertoire build (on ne committe jamais le code compilé). Vous pouvez vous aider du site suivant : https://www.gitignore.io/
+
+== Aller plus loin
+
+Ouvrir le projet avec l'éditeur ou l'IDE de son choix (Eclipse, NetBeans, Idea, VSCode). Améliorer le code Java librement. Il est également recommandé de jouer avec la classe de tests unitaires.
