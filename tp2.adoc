@@ -1,0 +1,72 @@
+= TP2 - Application JSP
+
+== Mise en place de l'envrironnement
+
+=== Gradle
+
+Après avoir mis en place le projet sous GitLab, il faut initialiser le projet Gradle comme lors du TP1. En complément du plugin gradle "java", nous allons utiliser le plugin "war". Ce plugin permet de packager des applications Web Java sous la forme d'une archive war déployable dans un serveur d'application.
+
+Pour avoir les apis de servlet à disposition dans le classpath, il faut aussi ajouter la dépendance vers l'api servlet "javax.servlet:javax.servlet-api:3.1.0".
+
+Gradle fourni aussi un plugin qui permet d'embarquer un serveur d'application "gretty" avec le plugin du même nom.
+
+Le fichier build.gradle doit être similaire à celui ci-dessous.
+
+
+[source]
+----
+plugins {
+    id 'war'  
+    id 'org.gretty' version '2.2.0' 
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0' 
+    testCompile 'junit:junit:4.12'
+}
+----
+
+=== Structuration du projet
+
+L'arborsence du répertoire de source doit être la suivante pour respecter les conventions.
+
+[source]
+----
+src/
+   main/
+        java/
+        webapp/
+    test/
+        java/         
+----
+
+== Objectif du TP
+
+L'objectif du TP est de créer une mini application permettant de faire l'inventaire de vos séries afin de savoir ce que vous avez déja regardé, ce que vous avez en stock ou ce qu vous aimeriez voir plus tard. Le but est de faire rapidement une application CRUD (Create, Read, Update, Delete) de "fiches séries". Chaque fiche peut contenir diverses informations comme le titre de la série, le nombre de saisons, les deux acteurs principaux, VO ou non, etc ...
+
+=== Version 1
+
+Dans la première version, les données ne seront pas persistées. Les fiches séries seront stockées en mémoire. Le but ici est d'avoir un prototype rapidement opérationnel pour ce qui est de l'UI/UX. Il est important de concevoir une architecture adapatable qui pourra évoluer dans la version 2
+
+Il est fortement conseillé de mettre en oeuvre la librairie JSTL.
+
+=== Version 2 
+
+Il est ici question de remplacer le stockage en mémoire par un stockage dans une base de données relationnelle. Le RBMS H2 sera largement suffisant pour le cadre de l'exercice. 
+
+=== Pour aller plus loin : les webjars
+
+Pour donner un look moderne à votre application, vous pouvez intégrer la librairie Bootstrap (https://getbootstrap.com/) garce à la teechnologie des webjars. Il faut simplement rajouter la dépendance "org.webjars:bootstrap:4.2.1" dans le build.gradle pour avoir à disposition la libraire Bootstrap.
+
+Pour inclure le css dans une page : 
+
+[source,html]
+----
+<head>
+  <link rel='stylesheet' href='webjars/bootstrap/4.2.1/css/bootstrap.min.css'>
+</head>       
+----
