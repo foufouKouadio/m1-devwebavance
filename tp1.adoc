@@ -4,7 +4,7 @@
 
 Commencez par vous connecter à la plateforme https://git.univ-pau.fr. 
 
-Ajoutez votre clé SSH à votre compte (https://docs.gitlab.com/ce/ssh/). Si vous n'avez de clé SSH, vous devrez une paire clé publique / clé privée. Attention vous devez ajouter votre clé publique (votre clé doit rester secrète d'où son nom).
+Ajoutez votre clé SSH à votre compte (https://docs.gitlab.com/ce/ssh/). Si vous n'avez de clé SSH, vous devrez créer une paire clé publique / clé privée. Attention vous devez ajouter votre clé publique (votre clé doit rester secrète d'où son nom).
 
 Un des deux binômes devra créer un projet qui servira pour la suite du TP1 (https://docs.gitlab.com/ce/gitlab-basics/create-project.html)
 
@@ -14,7 +14,7 @@ Il donnera des droits à l'autre binôme du groupe. (https://docs.gitlab.com/ce/
 
 Maintenant que le projet est créé sur gitlab, on peut y déposer du code à l'aide de Git. Pour les novices de git, il faudra lire la page suivante qui explique les commandes de base : http://rogerdudler.github.io/git-guide/index.fr.html
 
-Les deux binomes pourront ensuite s'exercer à collaborer sur le projet en y déposant chancun son tour des fichiers (de simples fichiers texte suffiront)
+Les deux binomes pourront ensuite s'exercer à collaborer sur le projet en y déposant chacun son tour des fichiers (de simples fichiers texte suffiront)
 
 == Gradle 
 
@@ -22,19 +22,36 @@ Gradle est un outil dédié à la construction de projets Java. Il facilite la g
 
 Pour installer Gradle dans son HOME, il faut commencer par installer SDKMAN (il sera utile pour d'autres outils que Gradle) (https://sdkman.io/install)
 
-L'installation de Gradle se faite ensuite avec une simple commande
+L'accès à internet au sein de l'université passe par un proxy. Il faudra le configurer en ajoutant dans un terminal les deux variables d'environnement suivantes : 
+
+[source,bash]
+----
+export http_proxy=http://cache.univ-pau.fr:3128/
+export https_proxy=http://cache.univ-pau.fr:3128/
+----
+
+L'installation de Gradle se fait ensuite avec une simple commande
 
 [source,bash]
 ----
 sdk install gradle
 ----
 
-Il faut ensuite retourner dans le répertoire du projet gi créé à l'étape précédente. C'est dans ce dernier qu'il faut initialiser le premier projet gradle à l'aide de la commande suivante : 
+Il faut ensuite retourner dans le répertoire du projet git créé à l'étape précédente. C'est dans ce dernier qu'il faut initialiser le premier projet gradle à l'aide de la commande suivante : 
 
 [source,bash]
 ----
 gradle init --type java-application
 ----
+
+Encore pour le proxy, il faut indiquer à gradle comment l'utiliser en valorisant les deux propriétés dans le fichier ~/.gradle/gradle.properties
+
+[source,properties]
+----
+systemProp.http.proxyHost=cache.univ-pau.fr
+systemProp.http.proxyPort=3128
+----
+
 
 Observer les fichiers générés (Astuce: git donnera la liste des fichiers qui viennent d'être créés), en particulier le fichier build.gradle contenant toutes les instructions de construction. 
 
@@ -53,6 +70,24 @@ gradle run --console=plain
 ----
 
 Avant de commiter le projet, il faut créer un fichier .gitignore permettant d'ignorer à tout jamais certains fichiers comme le répertoire build (on ne committe jamais le code compilé). Vous pouvez vous aider du site suivant : https://www.gitignore.io/
+
+== Remettre son projet
+
+A la fin du TP , il est demandé de remettre son projet. Pour cela, il faudra contribuer au dépot git suivant : https://git.univ-pau.fr/m1tidevwebavance/tp1-pullrequests.
+
+Il faut en premier "forker" le projet (https://docs.gitlab.com/ce/gitlab-basics/fork-project.html) puis cloner le dépôt sur votre poste. Pour des raisons de praticité, il ne faut pas committer sur la branche master directement. Commencez par créer une branche avec un nom compréhensible (exemple: ajout-projet-tp1-lafourcade). Puis créez un fichier nommé commme suit : `projet-binome1-binome2.json` avec le contenu suivant adapté : 
+
+[source,json]
+----
+{
+    "repo" : "git@git.univ-pau.fr:jlafour5/tp1-pullrequests.git",
+    "authors" : ["Julien Lafourcade"]
+}
+----
+
+Committez vos modifications et poussez votre nouvelle branche sur le dépôt distant. Vos pourrez ensuite créer une merge-request depuis l'interface de gitlab (https://docs.gitlab.com/ce/gitlab-basics/add-merge-request.html). La branche source sera celle créée précédemment sur votre dépôt et la branche destination sera master sur projet original.
+
+Enfin n'oubliez pas d'accorder des droits en lecture sur votre projet à l'enseignant pour qu'il puisse cloner le dépôt contenant le code du projet à corriger (https://docs.gitlab.com/ce/user/permissions.html).
 
 == Aller plus loin
 
