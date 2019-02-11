@@ -48,8 +48,8 @@ Encore pour le proxy, il faut indiquer à gradle comment l'utiliser en valorisan
 
 [source,properties]
 ----
-systemProp.http.proxyHost=cache.univ-pau.fr
-systemProp.http.proxyPort=3128
+systemProp.https.proxyHost=cache.univ-pau.fr
+systemProp.https.proxyPort=3128
 ----
 
 
