@@ -4,8 +4,8 @@
 
 * Mode de communication client-serveur sur HTTP
 * Taillé pour de la communication Machine-To-Machine
-* Ensemble de règle et de pratiques qui ont pour but de standardiser les échanges
-* Indépendances vis-à-vis de quelconque langage d'implémentation sous-jacent
+* Ensemble de règles et de pratiques qui ont pour but de standardiser les échanges
+* Indépendance vis-à-vis de quelconque langage d'implémentation sous-jacent
 
 == Representational state transfer
 
@@ -45,7 +45,7 @@ Client <- Serveur: HTTP Response
 
 |=== 
 
-== Réponse HTTP
+== Requête HTTP
 
 :source-highlighter: highlightjs
 :source-language: bash
@@ -75,7 +75,7 @@ Host: example.com
 
 * Javascript Object Notation
 * Format d'échange de données standardisé
-  - Dépasse les frontières du JS depuis lontemps
+  - Dépasse les frontières du JS depuis longtemps
 * Deux types de structures de données
   - collection (non ordonnée) de paires clé/valeur
   - liste ou tableau (ordonnés) de valeurs ou d'objets
@@ -118,20 +118,21 @@ Host: example.com
 
 * Les verbes donnent une sémantique à la requête
 * Il y en a 9 au total
-* 4 "principaux" sont les plus utilisés
+* 5 "principaux" sont les plus utilisés
   - GET
   - POST
   - PUT
   - DELETE
+  - OPTIONS
 
 == GET
 
-* Utilisé pour de la consultation des ressources
+* Utilisé pour de la consultation de ressources
 * Permet de récupérer une entité simple ou une liste d'entités
 * Une requête GET n'a pas de body
 * Les informations sont envoyées soit par 
   - des "path params" : composants du chemin qui seront récupérés par le parsing de ce dernier
-  - des "query params" : liste de paires clé/valeur se trouvant dans l'url aprs le "?"
+  - des "query params" : liste de paires clé/valeur se trouvant dans l'url après le "?"
 
 == GET (quelques exemples)
 
@@ -200,7 +201,7 @@ POST https://monserveur.com/etudiants
 
 * Intention de modifier une ressource existante
 * L'identification de la ressource à modifier est en général contenue dans l'URL
-* Le body de la requête contient les champs modifiés de la ressource
+* Le body de la requête contient la nouvelle version de la ressource en intégralité
 * La réponse à la requête peut contenir le résultat de la modification de la ressource par l'application
 
 == PUT (exemple)
@@ -218,6 +219,7 @@ PUT https://monserveur.com/etudiants/1895
 [source]
 ----
 {
+    "id": 1895, 
     "nom": "John",
     "prenom": "Doe",
     "villeDeNaissance": "New York"
@@ -280,7 +282,7 @@ https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
 * La réponse contient un header "Location" qui précise la nouvelle URL de la ressource
 * Les plus connus
   - 300 Multiple Choices: la requête ne précisaient pas le format de réponse souhaité
-  - 307 Temporary Redirect : le client devrait aller voir ailleurs mais quand repasser par là la prochaine fois
+  - 307 Temporary Redirect : le client devrait aller voir ailleurs mais quand même repasser par là la prochaine fois
 
 == Les codes de statut (4XX)
 

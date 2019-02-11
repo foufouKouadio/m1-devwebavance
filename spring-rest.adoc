@@ -1,0 +1,279 @@
+:source-highlighter: highlightjs
+
+= Spring Rest
+
+== Généralités 
+
+* Permet d'implémenter un architecture de type REST
+* On va déclarer des méthodes et leur associer des routes
+** Via des annotations
+* Spring Web se charge de router les requêtes vers la bonne méthode
+
+== Sérialisation/Desérialisation
+
+* L'application peut recevoir des requêtes avec un body dans un format particulier
+** Ici du JSON, mais on peut choisir du XML ou du YAML
+* Idem pour les réponses
+** Le format n'est pas forcément le même que celui de la requête
+
+== Sérialisation/Desérialisation
+
+* Spring utilise la bibliothèque Jackson pour prendre en charge le processus
+** Transparent pour le développeur
+** On reçoit/revoie des objets Java
+* Dans les cas plus poussés où Jackson n'est pas capable de faire la transformation, il est possible de passer ses propres mappers de transformation
+
+== Le contrôleur (REST)
+
+* Point d'entrée pour une partie de requêtes de l'application
+* Il n'y a qu'une instance du contrôleur au sein de l'application
+** Attention à la gestion de l'état
+* Pas de nécessité d'hériter d'une classe particulière
+* La classe sera annotée avec `@Controller` ou `@RestController`
+* L'annotation `@RequestMapping` permet de définir le chemin de la route de base
+
+== `@Controller` vs `@RestController`
+
+* `@Controller` n'est pas spécifique à l'implémentation de REST
+** Il sera nécessaire de de rajouter l'annoation `@ResponseBody` pour forcer la sérialisation du type de retour
+* `@RestController` facilite et allège l'écriture mais on perd en flexibliité
+
+== Exemple de squelettes
+
+[source, java]
+----
+@Controller
+@RequestMapping("etudiants")
+public class EtudiantsController {
+}
+----
+
+[source, java]
+----
+@RestController
+@RequestMapping("/etudiants")
+public class EtudiantsController {
+}
+----
+
+== Mapping route/méthode
+
+* On applique une des annotations dédiées sur une méthode
+** `@GetMapping`
+** `@PostMapping`
+** `@PutMapping`
+** `@DeleteMapping`
+* Ces annotations "héritent" de `@RequestMapping`
+
+
+== Mapping route/méthode
+
+* Si on ne précise pas la route, on mappera la route du controller (cf `@RequestMapping`)
+* Le paramètre par défaut est le "path"
+** Il sera concéténé au path du contrôleur
+
+== Mapping route/méthode
+
+* On peut aussi préciser 
+** les headers requis avec leurs valeurs (`headers = { "key1=val1", "key2=val2" }`)
+** les mediatypes consommés et produits
+*** `produces = "application/json"`
+*** `consumes = "application/xml"`
+
+== Exemple du requête GET
+
+[source, java]
+----
+@GetMapping(path = "/etudiants", consumes = "application/json")
+public List<Etudiant> getEtudiants() {
+    ...
+}
+----
+
+== Gestion des paramètres
+
+* Deux de types de paramètres : 
+** Les "path params" sont inclus dans le schéma du chemin
+*** Exemple : `/etudiants/jdoe`
+** Les "query params" sont présents après le "?" de l'url
+*** Exemple : `/etudiants?id=jdoe`
+
+== Gestion des paramètres
+
+* Les "path params" sont récupérés en arguments de la méthode
+** En prérequis, ils devront se trouver en placeholder dans le path
+*** Exemple :  `/etudiants/{id}`
+** Avec l'annotation `@PathVariable`. Elle prend en valeur par défaut l'identifiant mis dans le path.
+*** Exemple : `@PathVariable("id") String id`
+** Si la variable porte le même nom que le paramètre, il est inutile de donner le nom en argument
+*** Exemple : `@PathVariable String id`
+
+== Gestion des paramètres
+
+* Les "query params" sont récupérés de la même manière
+** Avec l'annotation `@RequestParam`. Elle prend en valeur par défaut l'identifiant mis dans l'url.
+*** Exemple : `@RequestParam("id") String id`
+** Si la variable porte le même nom que le paramètre, il est inutile de donner le nom en argument
+*** Exemple : `@RequestParam String id`
+
+== Exemple de paramètres
+
+[source, java]
+----
+@GetMapping(path = "/{id}")
+public Etudiant getEtudiant(@PathVariable String id) {
+    return etudiants.get(id);
+}
+----
+
+[source, java]
+----
+@GetMapping(params = { "id" } )
+public Etudiant getEtudiant(@RequestParam String id) {
+    return etudiants.get(id);
+}
+----
+
+== Gestion des réponses - Sérialisation
+
+* La sérialisation de l'objet de retour est automatique
+** Dans le cas ou il s'agit d'un type pour lequel Jackson sait faire la conversion
+*** Les types de bases de Java
+*** Les Java Beans qui n'embarquent que des types de bases ou d'autres Java Beans
+
+== Gestion des réponses - Object Mapper
+
+* Dans certains cas, la sérialisation n'est pas gérée ou pas comme on le souhaite
+* On créé un custom object mapper
+
+[source, java]
+----
+public class CustomEtudiantSerializer extends StdSerializer<Etudiant> {
+    .... 
+    @Override
+    public void serialize(
+      Etudiant e, JsonGenerator jsonGenerator, SerializerProvider serializer) {
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeStringField("nom_prenom", e.getNom() + " " + e.getPrenom());
+        jsonGenerator.writeEndObject();
+    }
+----
+
+
+== Les requêtes POST et PUT
+
+* Construction identique à requête GET
+* On annote les méthodes avec `@PostMapping` ou `@PutMapping`
+
+[source, java]
+----
+@PostMapping
+public Etudiant creerEtudiant() { ... }
+----
+
+[source, java]
+----
+@PutMapping("/{id}")
+public Etudiant majEtudiant() { ... }
+----
+
+== Les requêtes DELETE
+
+[source, java]
+----
+@DeleteMapping("/{id}")
+public void supprimerEtudiant(@PathVariable String id) { ... }
+----
+
+
+== Le corps de la requête
+
+* Pour les requêtes de type POST ou PUT, on souhaite récupérer le corps de la requête (le payload)
+* On utilise un paramètre annoté `@RequestBody`
+** La désérialisation est automatique
+** S'utilise conjointement avec `@PathVariable` ou `@RequestParam`
+
+== Gestion des erreurs
+
+* Spring va gérer un certain nombre d'erreurs nativement
+** 404 : la ressource n'existe pas car aucune route n'est configurée pour la servir
+** 405 : si la méthode HTTP n'est pas gérée (POST au lieu de GET)
+** 406 : on demande du XML en retour mais l'application n'est pas capable de le séraliser
+
+== Gestion des erreurs
+
+* Si une exception est levée mais pas catchée -> Erreur 5XX
+** Problème car non conforme à la philisophie de REST
+* Deux solutions
+** Gestion locale à la méthode
+** Gestion globale à l'application
+
+== Gestion des erreurs - Exemple
+
+* Si tout se passe bien, on va renvoyer l'étudiant qui sera sérialisé
+* Dans le cas de la méthode `getEtudiant()`, on va lever une `RuntimeException` de type `EtudiantNonTrouveException` si l'étudiant n'est pas connu
+
+== Gestion des erreurs - Méthode locale
+
+* En lieu et place de l'instance à séraliser, on renverra un objet de type `ResponseEntity<T>`
+* On y encapsulera l'objet que l'on aurait retourné habituellement
+
+[source, java]
+----
+@GetMapping(path = "/{id}")
+public ResponseEntity<Etudiant> getEtudiant(@PathVariable String id) {
+    return ResponseEntity.ok(findEtudiant(id));
+}
+----
+
+== Gestion des erreurs - Méthode locale
+
+* Si l'on rajoute la gestion de l'exception
+
+[source, java]
+----
+@GetMapping(path = "/{id}")
+public ResponseEntity<?> getEtudiant(@PathVariable String id) {
+    try {
+        return ResponseEntity.ok(findEtudiant(id));
+    } catch(EtudiantNonTrouveException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("L'étudiant n'a pas été trouvé");
+    }
+}
+----
+
+== Gestion des erreurs - Méthode globale
+
+* La gestion des erreurs se fait dans une classe dédiée
+** Elle est annotée `@RestControllerAdvice`
+** On peut éventuellement cloisonner la gestion des erreurs à un package en particulier
+*** `@RestControllerAdvice("org.m1.web.etudiants")`
+
+== Gestion des erreurs - Méthode globale
+
+* Les méthodes de la classe seront les "handlers" pour un ou plusieurs type(s) d'exception(s) en particulier
+** Elles sont annotées `@ExceptionHandler`
+** La méthode prend deux paramètres
+*** L'exception levée
+*** Un objet de type WebRequest
+** Elle renvoie une ResponseEntity
+
+== Gestion des erreurs - Méthode globale
+
+[source, java]
+----
+@RestControllerAdvice
+public class EtudiantsControllerAdvice {
+  
+    @ExceptionHandler(EtudiantNonTrouveException.class)
+    protected ResponseEntity<Object> gererLesEtudiantsNonTrouves(
+            RuntimeException e, WebRequest request) {
+        return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("L'étudiant n'a pas été trouvé");
+    }
+    
+}
+----

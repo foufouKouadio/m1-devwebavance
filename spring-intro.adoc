@@ -1,0 +1,62 @@
+= Le framework Spring
+
+== Généralités
+
+* Spring offre un cadre pour création d'application Java 
+  - En particulier la pour les applications Web
+* Plus simple, plus léger et moins invasif que JavaEE
+  - Les classes n'ont pas besoin d'hériter de classes particulières du framework
+* Actuellement en version 5.X
+  - La version 1.0 date de 2003  
+* Déploiement dans un conteneur d'applications  
+
+== Modules
+
+== Web MVC (Model View Controller)
+* Applications classiques
+** Pas de servlets ni de JSP
+** Les vues sont générées par des moteurs de templating (ex: Thymeleaf)
+* REST
+** On enlève le V de MVC
+** Sérialisation/Désérialisation automatique
+
+== Inversion de contrôle
+
+* On délègue le cycle de vie des composants au framework
+** Contrôleurs
+* Les composants sont simplement déclarés soit
+** Dans des fichiers de configuration
+** Par des annotations et scan du classpath
+* Injection de dépendances
+** Dans le cas où un composant en utilise un autre
+
+== Accès aux données
+
+* Pour tout type de bases de données 
+** Relationnelles via JPA/Hibernate
+** NoSQL : MongoDB, Neo4j ...
+* Apporte des abstractions supplémentaires
+** Création des repositories facilités
+** Gestion des transations
+
+== Autres modules
+
+* Aspect Oriented Programming
+* Cloud
+* Security
+* Advanced Message Queuing Protocol
+
+== Spring Boot
+
+* Amène ses propres opinions en terme de configuration de l'application
+** pour l'intégration des modules spring et des bibliothèques tierces
+* Gain de temps pour la majorité des use cases
+** On se concentre sur valeur métier de l'application
+* Tout reste entièrement configurable
+
+== Spring Boot (Examples)
+
+* Scanning auto du classpath
+* Configuration automatique de la connexion BDD si l'url de connexion est présente
+* Bootstrap du serveur d'application
+** Création d'un jar auto-executable
