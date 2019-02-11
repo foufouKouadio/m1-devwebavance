@@ -2,8 +2,8 @@
 
 == Généralités
 
-* Spring offre un cadre pour création d'application Java 
-  - En particulier la pour les applications Web
+* Spring offre un cadre pour création d'applications Java 
+  - En particulier pour les applications Web
 * Plus simple, plus léger et moins invasif que JavaEE
   - Les classes n'ont pas besoin d'hériter de classes particulières du framework
 * Actuellement en version 5.X
