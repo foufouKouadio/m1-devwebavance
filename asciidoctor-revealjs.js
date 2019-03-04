@@ -26,3 +26,4 @@ var compilePagesAttributes = {}
 var compilePagesOptions = {safe: 'safe', attributes: compilePagesAttributes, to_dir: 'output'};
 asciidoctor.convertFile('tp1.adoc', compilePagesOptions); 
 asciidoctor.convertFile('tp2.adoc', compilePagesOptions); 
+asciidoctor.convertFile('index.adoc', compilePagesOptions); 

@@ -1,0 +1,14 @@
+= M1 - UE Développement Web Avancé
+
+== Les cours
+
+* http://ecariou.perso.univ-pau.fr/cours/sd-m1/cours-architecture.pdf[JSP / Servlets] : diapos 21 à 81
+* link:rest.html[Rest]
+* link:spring-intro.html[Introduction à Spring]
+* link:spring-rest.html[Rest avec Spring]
+* link:injection-dependances.html[Injection de dépendances avec Spring]
+
+== Les TPs
+
+* link:tp1.html[TP 1] : Mise en place des outils Git et Gradle
+* link:tp2.html[TP 2]: Création d'un catalogue de séries avec JSP et Servlets

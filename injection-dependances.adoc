@@ -1,18 +1,257 @@
-= Injection de dépendances
+:source-highlighter: highlightjs
 
-== Dépendance ?
-:plantuml-server-url: http://www.plantuml.com/plantuml
-[plantuml]
+= Injection de dépendances avec Spring
+
+== Composants
+
+* Composants d'une application
+** Réception des requêtes HTTP
+** Gestion des règles métier
+** Appels à la base de données
+* Les composants interagissent les uns avec les autres 
+
+== Dépendance
+
+* Chaque composant dépend de un ou plusieurs autres composants
+* Hiérachie des composants
+** Composants de haut niveau, de bas niveau
+** Pas de cycles possibles  
+
+== Exemple - Récupération BDD
+
+[source, java]
 ----
-ProductController o-- ProductService
+public class EtudiantsDao {
+    public List<Eudiants> findAllEtudiants() {
+        ....
+    }
+}
 ----
 
+== Exemple - Controller REST
 
-== Injection ? 
-
-[plantuml, sample-plantuml-diagram, alt="Class diagram", width=250, height=118]
+[source, java]
 ----
-class BlockProcessor
-class PlantUmlBlock
-BlockProcessor <|-- PlantUmlBlock
+public class EtudiantsController {
+
+    private EtudiantsDao dao = new EtudiantsDao();
+
+    @Get("/")
+    public List<Eudiants> etudiants() {
+        return dao.findAllEtudiants()
+    }
+}
+----
+
+== Problème 1 - Manque d'abstraction
+
+* On utilise directement une implémentation
+** Comment faire pour tester unitairement mon Controller ?
+** Dans deux ans, comment puis-je remplacer l'accès base par une interrogation d'API ? 
+
+== Problème 2
+
+* Nécessaire d'instancier manuellement le DAO
+** Simple dans le cas de l'exemple
+** Le DAO n'a pas de paramètres (Connexion BDD ?)
+* Les différents modules peuvent avoir des cycles de vie différents qu'il faut gérer
+* Quand l'application grossit, la complexité explose
+
+== Solution 1 - Définir un contrat
+
+* Il est nécessaire de découpler l'implémentation du DAO de son contrat
+** En Java, on passera par une interface
+** Possibilité de changer d'implémentation
+*** Pour les tests : une autre implémentation pourra renvoyer des données sans accéder à la base
+*** Parce que les contraintes techniques peuvenet changer
+** Pas de fuite des spécificités d'implémentation dans le reste du code
+
+== Solution 1 - Inteface de contrat
+
+[source, java]
+----
+public interface EtudiantDao {
+    List<Etudiant> findAllEtudiants();
+}
+----
+
+== Solution 1 - Implémentation BDD
+
+[source, java]
+----
+public class EtudiantDaoBdd implements EtudiantDao {
+    public List<Eudiants> findAllEtudiants() {
+        // Accéder à la base de données
+    }
+}
+----
+
+== Solution 1 - Réécriture dans le controller
+
+[source, java]
+----
+public class EtudiantsController {
+
+    private EtudiantsDao dao = new EtudiantsDaoBDD();
+
+    @Get("/")
+    public List<Eudiants> etudiants() {
+        return dao.findAllEtudiants();
+    }
+}
+----
+
+== Solution 1 - Implémentation pour les tests
+
+[source, java]
+----
+public class EtudiantDaoTest implements EtudiantDao {
+    public List<Eudiants> findAllEtudiants() {
+        Etudiant etudiant = new Etudiant();
+        // ... peupler l'étudiant
+        return Arrays.asList(etudiant);
+    }
+}
+----
+
+== Solution 2 - Inversion of control
+
+* Principe fondamental : les objets ne doivent créer les objets dont ils sont besoin pour assurer leur activité
+* La création et le cycle de vie est délégue à des frameworks spécialisés
+* Pour garantir le principe fondamental, les frameworks réalisent l'injection de dépendances
+** Ils viennent alimenter un objets avec les dépendances dont il a besoin
+
+== Solution 2 - Exemple 
+
+[source, java]
+----
+public class EtudiantsController {
+
+    @Inject
+    private EtudiantsDao dao;
+
+    @Get("/")
+    public List<Eudiants> etudiants() {
+        return dao.findAllEtudiants();
+    }
+}
+----
+
+== L'injection de dépendances en Java
+
+* Dagger
+* Guice
+* *Spring DI*
+* CDI
+
+== Spring - Les beans
+
+* Toute forme d'instance managée par Spring est appelé *Bean* 
+
+== Configuraion des beans - 2 possibilités
+
+* Par fichiers XML
+** Avantage : très peu intrusif dans le code, pas de dépendance technique vers Spring
+** Inconvénient : le XML est parfois verbeux
+
+== Configuraion des beans - 2 possibilités
+
+* Par annotation
+** Avantage : plus de simplicité, refactoring simplifié
+** Inconvénient : lien plus fort avec Spring
+* Très pratique avec Spring Boot
+** Scan du classpath
+* Dans ce cours, nous utiliserons la configuration par annotations
+
+== Les 3 formes d'injection avec Spring
+
+* Constructeur : les composants sont passés en paramètres à l'instanciation
+* Attribut : le composant est assigné directement à un attribut (même privé !)
+* Setter : le composant à injecter est passé au setter correspondant
+
+== Injection - Constructeur
+
+[source, java]
+----
+public class EtudiantsController {
+
+    private EtudiantsDao dao;
+
+    @Inject
+    public EtudiantsController(EtudiantsDao dao) {
+        this.dao = dao;
+    }
+
+}
+----
+
+* Permet de 'prendre conscience' quand trop de compoosants sont injectés
+
+== Injection - Attribut
+
+[source, java]
+----
+public class EtudiantsController {
+
+    @Inject
+    private EtudiantsDao dao;
+
+}
+----
+
+* Simplicité mais pas forcément très conforme aux principe de l'orienté objet
+
+== Injection - Setter
+
+[source, java]
+----
+public class EtudiantsController {
+
+    private EtudiantsDao dao;
+
+    @Inject
+    public void setEtudiantDao(EtudiantDao dao) {
+        this.dao = dao;
+    }
+}
+----
+
+== Déclarer un bean - Directement sur le type
+
+* On pose une annotation `@Component` sur la classe d'implémentation
+
+[source, java]
+----
+@Component
+public class EtudiantDaoBdd implements EtudiantDao {
+    public List<Eudiants> findAllEtudiants() {
+    }
+}
+----
+
+== Déclarer un bean - Directement sur le type
+
+* Deux autres annotations sont à disposition
+** @Service
+** @Repository
+* Elles permettent de donner plus de sémantique
+
+== Déclarer un bean - Dans une classe de configuration
+
+* La classe est annotée `@Configuraion`
+* Elle contient des méthodes annotée `@Bean` qui vont renvoyer une instance
+* La méthode peut prendre des paramètres qui seront injectés 
+
+== Déclarer un bean - Dans une classe de configuration
+
+[source, java]
+----
+@Configuration
+public class DaoConfiguration {
+
+    @Bean
+    public EtudiantDao etudiantDao(ConnexionBdd connexionBdd) {
+        ....
+    }
+}
 ----
