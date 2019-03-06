@@ -43,7 +43,7 @@
 [source, java]
 ----
 @Controller
-@RequestMapping("etudiants")
+@RequestMapping("/etudiants")
 public class EtudiantsController {
 }
 ----
@@ -98,17 +98,20 @@ public List<Etudiant> getEtudiants() {
 ** Les "query params" sont présents après le "?" de l'url
 *** Exemple : `/etudiants?id=jdoe`
 
-== Gestion des paramètres
+== Gestion des paramètres - Path
 
 * Les "path params" sont récupérés en arguments de la méthode
 ** En prérequis, ils devront se trouver en placeholder dans le path
 *** Exemple :  `/etudiants/{id}`
+
+== Gestion des paramètres - Path
+
 ** Avec l'annotation `@PathVariable`. Elle prend en valeur par défaut l'identifiant mis dans le path.
 *** Exemple : `@PathVariable("id") String id`
 ** Si la variable porte le même nom que le paramètre, il est inutile de donner le nom en argument
 *** Exemple : `@PathVariable String id`
 
-== Gestion des paramètres
+== Gestion des paramètres -Query
 
 * Les "query params" sont récupérés de la même manière
 ** Avec l'annotation `@RequestParam`. Elle prend en valeur par défaut l'identifiant mis dans l'url.
@@ -144,17 +147,20 @@ public Etudiant getEtudiant(@RequestParam String id) {
 == Gestion des réponses - Object Mapper
 
 * Dans certains cas, la sérialisation n'est pas gérée ou pas comme on le souhaite
-* On créé un custom object mapper
+* On créé un serializer custom
 
 [source, java]
 ----
-public class CustomEtudiantSerializer extends StdSerializer<Etudiant> {
+@JsonComponent
+public class CustomEtudiantSerializer extends JsonSerializer<Etudiant> {
     .... 
     @Override
     public void serialize(
-      Etudiant e, JsonGenerator jsonGenerator, SerializerProvider serializer) {
+      Etudiant e, JsonGenerator jsonGenerator, SerializerProvider serializer)
+      throws IOException, JsonProcessingException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeStringField("nom_prenom", e.getNom() + " " + e.getPrenom());
+        jsonGenerator.writeStringField("nom_prenom", 
+                        e.getNom() + " " + e.getPrenom());
         jsonGenerator.writeEndObject();
     }
 ----
