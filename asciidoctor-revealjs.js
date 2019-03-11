@@ -16,6 +16,8 @@ asciidoctor.convertFile('injection-dependances.adoc', options);
 asciidoctor.convertFile('rest.adoc', options); 
 asciidoctor.convertFile('spring-intro.adoc', options); 
 asciidoctor.convertFile('spring-rest.adoc', options); 
+asciidoctor.convertFile('vuejs.adoc', options); 
+
 
 // Copie des assets nécessaires
 const fs = require('fs-extra')

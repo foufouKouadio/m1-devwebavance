@@ -1,0 +1,212 @@
+:source-highlighter: highlightjs
+
+
+= Introduction à Vue.js
+
+== Généralités
+
+* Framework Javascript
+* Le coeur du framework est dédié à la couche présentation
+* But : faciliter la création de Single Page Applications
+* Possibilité de brancher des modules supplémentaires
+** Routing : navigation intra-application
+** Client HTTP: communication avec le serveur
+
+== Single Page Application
+
+* Concept de développement d'applications clientes riches en Javascript
+* L'application est démarrée au chargement de la page
+* Elle gère l'intégralité des intéractions avec l'utilisateur
+* Tout au long de la navigation, la page n'est jamais rechargée
+* Le DOM (Document Object Model) est réécrit au fur et à mesure
+
+== Une application minimale avec Vue.js
+
+[source, html]
+----
+<div id="application">
+  {{ message }}
+</div>
+----
+
+[source, js]
+----
+var app = new Vue({
+  el: '#application',
+  data: {
+    message: 'Welcome !'
+  }
+})
+----
+
+== Fonctionnement général
+
+* On créé un élément racine clairement identifié
+** Ici le `div` avec un id `#application`
+** Contient le template
+* Le javascript créé une nouvelle instance de Vue qui prend en paramètre un objet
+** l'attribut `el` référence l'élément racine dans le DOM
+** `data` est un objet qui contient toutes les données permettant en autre de valoriser les éléments du template
+
+== Templating : texte
+
+* Les expressions qui sont entourées par deux accolades seront valorisées de manière réactive
+** Syntaxe "moustache"
+** Avec des propriétés de `data`
+** Ne fonctionne pas si les propriétés sont rajoutées après intanciation de l'objet Vue
+
+== Templating : texte
+
+* Chaque changement sur une propriété rafraichi automatiquement le DOM
+* Pour ne faire le rendu qu'une seul fois, il est possible de rajouter la directive `v-once`
+
+== Templating : texte - Exemples
+
+[source, html]
+----
+<div>{{ message }}</div>
+<div v-once>{{ message }}</div>
+----
+
+== Templating : attributs
+
+* Impossible d'utiliser la syntaxe moustache pour valoriser les attributs
+* Directive `v-bind`
+** Utilisation : `v-bind:<nom_attribut>=""`
+
+== Expressions Javascript Standards
+
+[source, html]
+----
+{{ valid ? 'VALIDE' : 'INVALIDE' }}
+
+{{ message.trim().toUpperCase() }}
+
+<div v-bind:index="value + 1">...</div>
+----
+
+== Affichage conditionnel
+
+* Directive `v-if`
+* L'élément sur lequel la directive est appliquée sera affiché si l'expression est évaluée à vrai
+** Si l'expression est "fausse", l'élément ne se retrouvera pas du tout dans le DOM
+* Directives `v-else` et `v-else-if` associées
+* Réactif à la détection des changements
+
+== Affichage conditionnel - Exemples
+
+[source, html]
+----
+<div v-if="my-expression">
+  Je passe dans le if
+</div>
+<div v-else-if="my-other-expression">
+  Je passe dans le else if
+</div>
+<div v-else>
+  Je passe dans le else
+</div>
+----
+
+== Affichage conditionnel - Alternative
+
+* Directive `v-show`
+* Dans tous les cas l'élément associé sera dans le DOM
+* L'affichage sera conditionné par l'attribut CSS display
+
+== Affichage de listes
+
+* Directive `v-for`
+* L'expression associée déclare la liste sur laquelle on itère ainsi que la variable d'itération
+** `v-for="etudiant in etudiants"`
+* Le contenu de l'élement associé à la directive est un template
+** Le template sera valué à chaque passage de boucle
+** Les éléments de DOM résultants seront ajoutés dans le DOM
+
+== Affichage des listes - Exemples
+
+[source, html]
+----
+<ul id="lesEtudiants">
+  <li v-for="etudiant in etudiants">
+    {{ etudiant.nom }} - {{ etudiant.prenom }}
+  </li>
+</ul>
+----
+
+== Affichage des listes - Détection des changements
+
+* Toutes les méthodes de manipulation des tableaux sont compatibles avec la détection des changements
+* L'affecttion d'une nouvelle instance de tableau à un attribut de `data` déclenchera la mise à jour de la Vue
+* Bémol : le remplacement d'une valeur directement à une index du tableau ne sera pas détecté
+
+[source, js]
+----
+app.etudiants[2] = { nom : "Snow", prenom : "John"}
+----
+
+== Gestion des évènements
+
+* Evènements standards Javascript
+** click
+** keypress
+** dblclick
+* Utilisation d'une directive `v-on` associèe
+** v-on:click
+** v-on:keypress
+** ...
+
+== Gestion des évènements - Exemples
+
+[source, html]
+----
+<div id="compteur">
+  <button v-on:click="tick += 1">{{ tick }}</button>
+</div>
+----
+
+[source, js]
+----
+var compteur = new Vue({
+  el: '#compteur',
+  data: {
+    tick: 0
+  }
+})
+----
+
+
+== Déclaration de méthodes
+
+* Les méthodes pourront être déclarées dans un objet `methods` passés à l'instanciation de l'objet Vue
+* Pour utiliser les attributs de `data`, on référence la Vue avec la variable this
+[source, js]
+----
+var app = new Vue({
+  el: '#application',
+  data: {
+    message: 'Welcome !'
+  }
+  methods: {
+    alertMessage : function() {
+      alert(this.message);
+    }
+  }
+})
+----
+
+== Gestion des inputs
+
+* Il est souvent nécessaire d'associer les attributs de `data` avec les inputs
+* La directive `v-model` va synchroniser de manière réactive et bidirectionnelle l'input
+** Si l'utilisateur change la valeur de l'input, la valeur dans `data` est modifiée
+** Un changement dans la valeur contenue dans `data` met à jour l'input
+
+== Gestion des inputs - Exemples
+
+[source, html]
+----
+<input v-model="message">
+<p>{{ message }}</p>
+----
+

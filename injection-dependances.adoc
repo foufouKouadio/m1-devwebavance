@@ -238,7 +238,7 @@ public class EtudiantDaoBdd implements EtudiantDao {
 
 == Déclarer un bean - Dans une classe de configuration
 
-* La classe est annotée `@Configuraion`
+* La classe est annotée `@Configuration`
 * Elle contient des méthodes annotée `@Bean` qui vont renvoyer une instance
 * La méthode peut prendre des paramètres qui seront injectés 
 
@@ -253,5 +253,108 @@ public class DaoConfiguration {
     public EtudiantDao etudiantDao(ConnexionBdd connexionBdd) {
         ....
     }
+}
+----
+
+== Les scopes des beans
+
+* Selon le besoin, Spring peut fournir une nouvelle instance du bean (ou pas)
+* Les scopes possibles sont :
+** singleton (défaut)
+** prototype
+** request
+** session
+** application
+** websocket
+
+== Singleton
+
+* Mode par défaut
+* On peut utiliser l'annotation `@Scope("singleton")`
+* L'instance sera créée une bonne fois pour toute et toujours injectée
+* Attention à la gestion de l'étudiant
+
+== Prototype
+
+* On peut utiliser l'annotation `@Scope("prototype")`
+* L'instance sera créée à chaque fois qu'une injection est réalisée
+* Idéal pour disposer d'un contexte "propre" systématiquement
+
+== Request
+
+* Pertinent seulement dans une contexte "Web"
+* On peut utiliser l'annotation `@RequestScope`
+* Une nouvelle instance sera créée à chaque nouvelle requête
+* Utile pour gérer un état qui doit durer tout au long de la requête
+
+== Session
+
+* Pertinent seulement dans une contexte "Web"
+* On peut utiliser l'annotation `@SessionScope`
+* Une nouvelle instance sera créée à chaque nouvelle session
+* Exemple d'utilisation : gérer le panier d'un client sur un site marchand
+
+== Possibilités additionnelles avec Spring Boot
+
+* Configuration de beans selon certaines conditions
+* Annotations sur les beans ou les classes de configuration
+** Présence d'une classe dans le classpath
+** Présence d'un autre bean
+** Présence d'une propriété
+** Présence d'une ressource
+** Présence dans une application Web
+
+== Exemples
+
+[source, java]
+----
+@Configuration
+@ConditionalOnClass(MariaDbDriver.class)
+class MariaDbConfig {
+    //...
+}
+
+@Configuration
+@ConditionalOnClass(PostgresDriver.class)
+class PostgresConfig {
+    //...
+}
+----
+
+
+== Exemples
+
+[source, java]
+----
+@Bean
+@ConditionalOnBean(name = "etudiantDao")
+EtudiantService etudiantService(EtudiantDao dao) {
+    // ...
+}
+----
+
+== Exemples
+[source, java]
+----
+@Bean
+@ConditionalOnProperty(name = "schema.version", havingValue = "2")
+class AccesVersion2Dao {
+    //...
+}
+
+@Bean
+@ConditionalOnProperty(name = "schema.version", havingValue = "1")
+class AccesVersion1Dao {
+    //...
+}
+----
+
+== Exemples
+
+[source, java]
+----
+@ConditionalOnResource(resources = "classpath:etudiants.csv")
+EtudiantCsvReader etudiantCsvReader() {
+    // ...
 }
 ----
