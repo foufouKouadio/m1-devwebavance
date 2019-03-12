@@ -13,7 +13,9 @@
 
 * link:tp1.html[TP 1] : Mise en place des outils Git et Gradle
 * link:tp2.html[TP 2]: Création d'un catalogue de séries avec JSP et Servlets
+* link:tp3.html[TP 3]: Création d'une Api Rest avec Spring Boot
 
 == Les projets d'exemples
 
 * https://git.univ-pau.fr/m1tidevwebavance/jsp-servlet-example[JSP et Servlets]
+* https://git.univ-pau.fr/m1tidevwebavance/spring-boot-rest-api-example[Spring Boot Rest Api]

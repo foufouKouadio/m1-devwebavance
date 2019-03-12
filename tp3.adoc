@@ -1,0 +1,16 @@
+= TP 3 - Api Rest avec Spring Boot
+
+== Mise en place de l'environnement
+
+Pour initialiser le projet, vous pourrez utiliser l'outil en ligne suivant : https://start.spring.io/
+
+On utilise le plugin gradle pour Spring Boot. Vous pourrez démarrer l'application avec la tâche `bootRun`
+
+== Objectif du TP
+
+L'objectif du TP est de créer une API Rest en reprenant le modèle de donnée du link:tp2.html[TP 2]. On ajoutera au CRUD une route permettant de lancer une recherche avec des filtres.
+Vous devrez utiliser les concepts d'injection de dépendance vus en cours.
+
+== Utilisation de Postman
+
+Pour tester votre API, vous utiliserez l'outil Postman téléchargeable à l'adresse suivante : https://www.getpostman.com/downloads/
