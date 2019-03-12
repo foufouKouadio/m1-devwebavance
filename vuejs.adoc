@@ -198,7 +198,7 @@ var app = new Vue({
 == Gestion des inputs
 
 * Il est souvent nécessaire d'associer les attributs de `data` avec les inputs
-* La directive `v-model` va synchroniser de manière réactive et bidirectionnelle l'input
+* La directive `v-model` va synchroniser de manière réactive et bidirectionnelle
 ** Si l'utilisateur change la valeur de l'input, la valeur dans `data` est modifiée
 ** Un changement dans la valeur contenue dans `data` met à jour l'input
 

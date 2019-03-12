@@ -116,10 +116,10 @@ public class EtudiantDaoTest implements EtudiantDao {
 
 == Solution 2 - Inversion of control
 
-* Principe fondamental : les objets ne doivent créer les objets dont ils sont besoin pour assurer leur activité
-* La création et le cycle de vie est délégue à des frameworks spécialisés
+* Principe fondamental : les objets ne doivent pas créer les objets dont ils ont besoin pour assurer leur activité
+* La création et le cycle de vie sont délégués à des frameworks spécialisés
 * Pour garantir le principe fondamental, les frameworks réalisent l'injection de dépendances
-** Ils viennent alimenter un objets avec les dépendances dont il a besoin
+** Ils viennent alimenter un objet avec les dépendances dont il a besoin
 
 == Solution 2 - Exemple 
 
@@ -185,7 +185,7 @@ public class EtudiantsController {
 }
 ----
 
-* Permet de 'prendre conscience' quand trop de compoosants sont injectés
+* Permet de 'prendre conscience' quand trop de composants sont injectés
 
 == Injection - Attribut
 
@@ -199,7 +199,7 @@ public class EtudiantsController {
 }
 ----
 
-* Simplicité mais pas forcément très conforme aux principe de l'orienté objet
+* Simplicité mais pas forcément très conforme aux principes de l'orienté objet
 
 == Injection - Setter
 
