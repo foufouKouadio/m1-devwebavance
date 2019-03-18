@@ -667,11 +667,136 @@ const routes = [
 * Il est parfois plus facile de mémoriser le nom plutôt que le chemin
 ** Ce dernier peut vite se rallonger
 
+[source, js]
+----
+const routes = [
+  { path: '/detail/:id', name: 'detail-etudiant', component: DetailEtudiant }
+]
+----
+
 == Navigation : declarative
 
 * On utilise le composant `<router-link>`
 
 [source, html]
 ----
-<router-link to="/foo">Go to Foo</router-link>
+<router-link to="'/detail/' + id">Go to Foo</router-link>
 ----
+
+* Dès qu'il y a des paramètres, il est recommander de nommer la route pour bénéficier de la valorisation automatique des paramètres du chemin
+
+[source, html]
+----
+<router-link to="{ name: 'detail-etudiant', params: { id: id }">
+  Go to Foo
+</router-link>
+----
+
+== Navigation : programmatique
+
+* On appelle la méthode `push` sur le router
+
+[source, js]
+----
+router.push('detail-etudiant')
+
+router.push({ path: '/detail' + this.currentEtudiant.id })
+
+router.push({ name: 'detail-etudiant', params: { id: this.currentEtudiant.id } })
+
+router.push({ path: '/rechercher', query: { nom: this.tokenNom } })
+----
+
+== Navigation : programmatique - Compléments
+
+* La méthode `replace` est identique à `push`
+** Elle remplace l'entrée courante dans l'historique plutôt que d'en ajouter une nouvelle
+* La méthode `go` permet d'avancer ou de reculer de n pas dans l'historique du navigateur 
+
+== Client HTTP
+
+== Communiquer avec le serveur
+
+* Dans la plupart des cas, l'application cliente n'est pas suffisante. Elle a besoin d'intéragir avec le serveur pour récupérer ou envoyer des données
+* Il existe des modules complémentaires à Vue pour la communication HTTP avec le serveur
+* Nous verrons ici le client vue-resource
+
+== Fonctionnalités de vue-resource
+
+* Permet d'interroger une API Rest selon les verbes HTTP classiques : GET, POST, PUT, DELETE ...
+* Les retours d'appels serveur sont des Promises
+* Si on respecte la philosophie des ressources REST, vue-resource offre des raccourcis
+
+== Les Promises
+
+* La clé du mécanisme d'un client HTTP est l'asynchronisme
+* Une opération sur le client faisant un appel vers le serveur ne doit pas être bloquante
+** Le serveur répondra au bout d'un temps inderterminé
+* Pour répondre à cette problématique, vue-resource renvoie des promises. 
+* On va chainer à cette promesse une action de callback qui sera exécutée quand la promesse sera résolue
+
+== Exemple de requête GET
+
+[source, js]
+----
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+<script>
+  this.$http.get('/etudiants').then(response => {
+    this.etudiants = response.body;
+  }, response => {
+    // traiter en cas d'erreur
+  });
+</script>
+----
+
+
+== Exemple de requête POST
+
+[source, js]
+----
+<script>
+  this.$http.post('/etudiant', {nom: 'Doe', prenom: 'John'}).then(response => {
+    response.status;
+    response.statusText;
+    response.headers.get('Expires');
+    this.nouvelEtudiant = response.body;
+  }, response => {
+  });
+</script>
+----
+
+== Liste complète des méthodes
+
+* get(url, [config])
+* head(url, [config])
+* delete(url, [config])
+* jsonp(url, [config])
+* post(url, [body], [config])
+* put(url, [body], [config])
+* patch(url, [body], [config])
+
+== Créer une resource
+
+* Dans le cas d'une API serveur répondant au pattern REST CRUD classique, on peut interagir avec l'API en déclarant une resource
+* L'implémentation des méthodes est réalisée automatiquement
+
+== Exemple de resource
+
+[source, js]
+----
+<script>
+  var resource = this.$resource('/etudiant{/id}');
+
+  resource.get({id: 1}).then(response => {
+    this.etudiant = response.body;
+  });
+
+  resource.save({id: 1}, {item: this.item}).then(response => {
+  }, response => {
+  });
+
+  resource.delete({id: 1}).then(response => {
+  }, response => {});
+</script>
+----
+
