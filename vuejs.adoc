@@ -210,3 +210,468 @@ var app = new Vue({
 <p>{{ message }}</p>
 ----
 
+[source, html]
+----
+<input type="checkbox" id="checkbox" v-model="checked">
+<label for="checkbox">{{ checked }}</label>
+----
+
+== Gestion des inputs - Exemples
+
+[source, html]
+----
+<div id='many-checkboxes'>
+  <input type="checkbox" id="jsp" value="JSP" v-model="technos">
+  <label for="jps">JSP</label>
+  <input type="checkbox" id="rest" value="Rest" v-model="technos">
+  <label for="rest">Rest</label>
+  <br>
+  <span>Technos: {{ technos }}</span>
+</div>
+----
+
+[source, js]
+----
+new Vue({
+  el: '#many-checkboxes',
+  data: {
+    technos: []
+  }
+})
+----
+
+* Possiblité d'utiliser dynamiquement la propriété `value` avec la directive `v-bind`
+
+== Model modifiers
+
+* Les modifiers ajoutent des traitements sur le model avant de l'assigner
+* Trois possibilités
+** Lazy : retarde l'assignation au moment du `change` event (perte de focus)
+** Number : réalise la conversion avant l'assignation
+** Trim : supprime les espaces avant/après
+* Combinaisons possibles
+
+[source, html]
+----
+<input v-model.lazy="msg" >
+<input v-model.trim.lazy="msg" >
+----
+
+== Les composants
+
+== Généralités
+
+* Les composants permettent d'encapsuler une partie de l'interface pour réutilisation
+* Les composants Vue sont eux même des instances de Vue réutilisables
+* Une application Vue peut être modélisée comme un arbre de composants
+
+== Attention !
+
+* L'abus de composants peut nuire à votre application
+* Il faut éviter de placer trop d'intelligence dans les composants
+** Du code métier en particulier
+
+== Déclarer un composant
+
+* Chaque composant est référencé par un nom unique
+
+[source, js]
+----
+Vue.component('detail-etudiant', { /* ... */ })
+----
+
+* Nommage
+** Spinal Case : `detail-etudiant`
+** Pascal Case : `DetailEtudiant` - On pourra utiliser le composant avec `<DetailEtudiant/>` ou `<detail-etudiant/>`
+
+== Utilisation du composant
+
+[source, html]
+----
+<div id='gestionEtudiants'>
+  <div v-for="e in etudiants">
+    <detail-etudiant ...>
+    </detail-etudiant>
+  </div>
+</div>
+----
+
+[source, js]
+----
+new Vue({
+  el: '#gestionEtudiants',
+  data: {
+    etudiants: [...]
+  }
+})
+----
+
+
+== Déclaration globale VS locale
+
+* Globale
+** Simple à utiliser
+** Le composant sera présent dans tous les cas même si on ne l'utilise pas
+
+== Déclaration globale VS locale
+
+* Locale
+** Un composant est un objet assigné dans une variable
+** Les composants seront enregistrés lors de la création de l'instance de Vue 
+** La déclaration locale apporte plus de contrôle (ex: sur le nommage d'une application à l'autre)
+
+
+== Exemple de déclaration locale
+
+[source, js]
+----
+var Composant1 = { /* ... */ }
+var Composant2 = { /* ... */ }
+
+new Vue({
+  el: '#app',
+  components: {
+    'mon-composant': Composant1,
+    'composant-2': Component2
+  }
+})
+----
+
+== Le template
+
+* Le template du composant est passé en attribut à la déclaration
+* La syntaxe est identique à celle étudiée précédement
+* Le template sera parsé par le framework pour validation
+** Il ne doit contenir qu'un seul élément racine (comme toute instance de Vue)
+
+== Exemple de déclaration du template
+
+[source, js]
+----
+Vue.component('detail-etudiant', {
+  data : ...
+  template : "<div>Hello from mon composant</div>"
+});
+----
+
+
+
+== Le cas particulier des data
+
+* Un composant est par définition réutilisable
+** On peut avoir n instances du composant dans notre application
+* Si les datas sont déclarées sous la forme d'un objet, les datas seront partagées par les toutes les instances
+* Pour remédier au problème, `data` doit être une fonction qui renvoie un objet
+** Une nouvelle instance de data sera renvoyée pour chaque création d'instance de composant
+
+== Exemple de déclaration des data
+
+[source, js]
+----
+Vue.component('detail-etudiant', {
+  data : function() {
+    return {
+      a: 1,
+      b: 2
+    };
+  }
+  template: ...
+});
+----
+
+== Propriétés des composants
+
+* Pour configurer le composant, il est primordial de pouvoir lui passer des données
+* On va déclarer des propriétés sur le composant
+* Les propriétés seront valorisables avec des attributs HTML classiques
+
+== Déclaration des propriétés
+
+* On passe un attribut `props` à la déclaration du composant
+* La version minimale consiste en un tableau contenant les noms des propriétés
+* Les noms doivent être déclarés en camelCase
+* A l'utilisation, on fera une conversion camelCase -> spinal-case
+** A particulier dû au fait qu'HTML est insensible à la casse en ce qui concerne les attributs
+
+== Exemple de déclaration des propriétés
+
+[source, js]
+----
+Vue.component('detail-etudiant', {
+  data : ...
+  template: ...
+  props: ['nom', 'prenom', 'anneeDeNaissance', 'inscrit', 'autresInformations']
+});
+----
+
+== Typage des propriétés
+
+* Permet d'ajouter des contraintes
+* Documente de fait le composant
+* Une propriété peut être de plusieurs types possibles
+* Dans le cas où la valeur passée et la valeur attendue ne correspondent pas, affichage d'un warning dans la console à l'exécution
+* On ne passe plus un tableau mais un objet
+* Type possible : String, Number, Boolean, Array, Object, Function, Promise
+** Attention aux effets de bord dans le cas d'une fonction
+
+== Exemple de propriétés typées
+
+[source, js]
+----
+Vue.component('detail-etudiant', {
+  data : ...
+  template: ...
+  props: {
+    nom: String,
+    prenom: String,
+    anneeDeNaissance: Number,
+    inscrit: Boolean,
+    autresInformations: Object
+  }
+});
+----
+
+== Valoriser une propriété : statique ou dynamiquement
+
+* Dans le cas d'une utilisation directe de l'attribut correspondant, la propriété sera valorisée avec la chaîne de caractère entre guillemets
+* Pour aller chercher la données dans les datas, il faut utiliser la directive `v-bind`
+* La directive est aussi utile dans le cas où la proprité est typée. La conversion vers le bon type se fera automatiquement
+
+== Exemples de valorisations de propriétés
+
+[source, html]
+----
+<detail-etudiant nom="Doe" prenom="John"></detail-etudiant>
+----
+
+[source, html]
+----
+<detail-etudiant nom="e.nom" prenom="e.prenom"></detail-etudiant>
+----
+
+[source, html]
+----
+<detail-etudiant v-bind:anneeDeNaissance="1980"></detail-etudiant>
+----
+
+[source, html]
+----
+<detail-etudiant v-bind:inscrit="true"></detail-etudiant>
+----
+
+== Accéder à une propriété dans le composant
+
+* Les propriétés deviennent des attributs (au sens objet) de l'instane du composant
+* On accède donc à la valeur via la variable `this`
+
+[source, js]
+----
+Vue.component('detail-etudiant', {
+  data : ...
+  template: ...
+  props: ...
+  methods: {
+    sayHello: function() {
+      alert('Hello ' + this.prenom);
+    }
+  } 
+});
+----
+
+== Mise à jour Parent -> Enfant
+
+* La mise à jour réactive ne se fait que dans le sens Parent -> Enfant
+* Si la valeur change dans le parent, l'enfant aura aussitôt la nouvelle valeur à disposition
+* La mise à jout dans le sens inverse n'est pas autorisée et on trouvera les warnings correspodants dans la console
+
+== Validation des propriétés
+
+* Mécanisme qui vient en supplément du typage
+* Caractère obligatoire : `required: true`
+* Valeur par défaut : `default: 42`
+* Validateur custom : fonction qui prend un paramètre (la valeur de la propriété) et qui renvoi un booléen
+
+== Les évènements
+
+* Les évènements (ou events) sont un moyen de déclencher un appel vers le parent
+** et d'y faire remonter de l'information par la même occasion
+* Contrairement aux propriétés, les évènements ne sont pas déclarés dans la définition du composant
+* Un évènement est référencé par son nom (Spinal Case très fortement conseillé)
+
+== Déclenchement d'un évènement
+
+* Un évènement est déclenché à l'aide de la méthode `$emit`
+* La méthode prend un argument obligatoire
+** le nom de l'évènement
+* Et un argument optionnel
+** La valeur qui sera associée à la remontée d'évènement
+
+== Exemples de déclenchement
+
+[source, js]
+----
+function() {
+  $emit('ok');
+}
+----
+
+[source, js]
+----
+function() {
+  $emit('valider-chaine', "Chaîne à valider");
+}
+----
+
+== Capter l'évènement dans le parent
+
+* A l'utilisation du composant, on va capter les évènements grâce à la directive `v-on`
+** Exemple : `v-on:ok='alert("ok")'`
+* La valeur associée à l'évènement se trouvera dans un variable paradoxalement appelée `$event`
+* Pour gérer la captation, on pourra soit spécifier une expression javascript standard, soit le nom d'une fonction appelée Handler
+
+== Exemples de captation
+
+[source, html]
+----
+<detail-etudiant v-on:valider="maj($event.nom)"></detail-etudiant>
+----
+
+[source, html]
+----
+<detail-etudiant v-on:valider="majHandler"></detail-etudiant>
+----
+
+[source, js]
+----
+Vue.component('detail-etudiant', {
+  data : ...
+  template: ...
+  props: ...
+  methods: {
+    maj: function(nom) { /****/ }
+    majHandler: function(etudiant) { /****/ }
+  } 
+});
+----
+
+== Les slots 
+
+* Un slot est un mécanisme qui va nous permettre de déclarer du contenu dans le parent, contenu qui viendra s'afficher au milieu du composant enfant
+* `<slot>` est un élement particulier qui sera remplacé par le contenu se trouvant entre les balises du composant
+
+== Exemple d'un slot
+
+[source, js]
+----
+Vue.component('page-title', {
+  template: '<h1><slot></slot></h1>'
+});
+----
+
+
+[source, html]
+----
+<page-title>Détail de l'étudiant</page-title>
+----
+
+== Routing : créer des application multi-pages
+
+== Le router
+
+* Vue.js offre un module complémentaire pour la navigation : le router
+* Le router va permettre à l'utilisateur de "changer de page"
+* C'est en fait un élément du DOM dont le contenu sera mis à jour par le router
+* Chaque "page" de l'application sera modélisée par un composant
+
+== Insertion dans le template de l'application
+
+[source, html]
+----
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+<div id="app">
+  <router-view></router-view>
+</div>
+----
+
+* `router-view` est l'élément qui sera remplacé par du contenu
+
+== Les routes
+
+* Une route est une correspondane entre un chemin (dans l'url) et un composant Vue
+
+[source, js]
+----
+const DetailEtudiant = { template: '<div>Détail étudiant</div>' }
+
+const routes = [
+  { path: '/detail', component: DetailEtudiant }
+]
+----
+
+== Les routes
+
+* Une fois la liste des routes complète, on instancie le router et pour terminer l'application
+
+[source, js]
+----
+const router = new VueRouter({
+  routes: routes
+})
+
+const app = new Vue({
+  router: router;
+}).$mount('#app')
+----
+
+
+== Paramètres des routes
+
+* Le chemin d'un route peut contenir des placeholders qui rendront la route dynamique
+
+[source, js]
+----
+const routes = [
+  { path: '/detail/:id', component: DetailEtudiant }
+]
+----
+
+* A l'exécution, ces paramètres sont accessibles dans un dictionnaire `params` attributs de l'objet `$route` accessible sur le composant
+
+[source, js]
+----
+const DetailEtudiant = { template: '<div>
+  Détail étudiant {{ $route.params.id }}
+</div>' }
+----
+
+== Priorité des routes
+
+* Les routes déclarées en premier sont prioritaires en cas de multi-match
+* Utile pour la gestion des routes inconnues (type 404)
+
+[source, js]
+----
+const NotFound = { template: '<div>Page non trouvée</div>' }
+
+const routes = [
+  { path: '*', component: NotFound }
+]
+----
+
+== Route nommée
+
+* Quand l'application grossi, il devient interessant de nommer les routes
+* Moins sensible au refactoring, on peut changer les urls facilement
+* Il est parfois plus facile de mémoriser le nom plutôt que le chemin
+** Ce dernier peut vite se rallonger
+
+== Navigation : declarative
+
+* On utilise le composant `<router-link>`
+
+[source, html]
+----
+<router-link to="/foo">Go to Foo</router-link>
+----
