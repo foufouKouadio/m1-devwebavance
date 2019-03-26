@@ -14,6 +14,7 @@
 * link:tp1.html[TP 1] : Mise en place des outils Git et Gradle
 * link:tp2.html[TP 2]: Création d'un catalogue de séries avec JSP et Servlets
 * link:tp3.html[TP 3]: Création d'une Api Rest avec Spring Boot
+* link:tp4.html[TP 4]: Création d'une Single Page Application avec Vue.js
 
 == Les projets d'exemples
 

@@ -1,0 +1,87 @@
+= TP 4 - Création d'une Single Page Application avec Vue.js
+
+== Mise en place de l'environnement
+
+Pour ce TP, il nous faut disposer d'un serveur web qui pourra servir du HTML et du Javascript (évetuellement du CSS). Nous allons utiliser le même serveur qu'au TP 2. En effet, via une JSP, nous allons générer une page Web qui va contenir tout le code permettrant de démarrer une application Vue.js.
+
+Pour récupérer les fichiers Javascript de Vue.js ainsi que du Router et du client Http, nous utiliserons le mécanisme des WebJars. Les WebJars sont des archives (des jars) disponibles sur internet. Ces archives contiennent des éléments Javascript que nous pourrons utiliser dans notre application. L'avantage des WebJars est que ces derniers s'intègrent bien au mécanisme de gestion des dépendances Gradle. Nous aurons donc uniquement à des déclarer des dépendances dans le fichier `build.gradle` pour récupérer automatiquement tous les fichiers javascript dont nous avons besoin. Le fichier `build.gradle` du projet aura la forme suivante: 
+
+[source]
+----
+plugins {
+    id 'war'
+    id 'org.gretty' version '2.2.0'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    providedCompile group: 'jstl', name: 'jstl', version: '1.2'   
+    runtime 'org.webjars:vue:2.5.16'
+    runtime 'org.webjars.npm:vue-resource:1.5.1'
+    runtime 'org.webjars.npm:vue-router:3.0.2'
+    runtime 'org.webjars.npm:http-vue-loader:1.3.5'
+} 
+----
+
+
+== Créer une première application Vue
+
+Il faut maintenant initialiser la JSP qui nous permettra de renvoyer l'application Vue dans le navigateur de l'utilisateur. A l'aide de la JSTL, vous devez déclarer le lien vers le fichier Javascript de Vue.js.
+
+[source]
+----
+<script src="<c:url value = '/webjars/vue/2.5.16/vue.js'/>"></script>
+----
+
+Créez ensuite une mini application Vue comme vu dans le cours pour tester le bon fonctionnement de notre serveur.
+
+== Chaque composant dans son fichier
+
+Pour bien déposer chaque chose à sa place et garder notre code clair, nous allons étudier dans cette partie un mécanisme d'encapsulation d'un composant dans son propre fichier. Ce fichier contiendra le template du composant ainsi que le code Javascript associé. Le fichier résultant prendra un extension `.vue`. Voici un exemple de composant : 
+
+[source, vue]
+----
+<template>
+    <div>
+        {{ nom }}
+    </div> 
+</template>
+<script>
+module.exports = {
+    data: function() {
+        return {
+            nom: "John"
+        }
+    }
+}
+</script>
+----
+
+Pour charger le composant à partir du fichier `.vue`, nous utiliserons une méthode `httpVueLoader` de la lirairie du même nom (`http-vue-loader`) comme suit : 
+
+[source, js]
+----
+var composant = httpVueLoader("my-component.vue");
+var app = new Vue({
+    el: '#app',
+    components: {
+        'my-component': composant
+    }
+})
+----
+
+== Créer un composant affichant une liste de séries
+
+Il faut maintenant créer un composant un peu plus évolué qui permet d'afficher une liste de séries. Pour le moment, la liste de série sera déclarée en dur dans le code Javascript. 
+
+== Utilisation du router
+
+Pour améliorer la navigation dans notre application, nous devons ensuite utiliser le router qui va nous aider dans l'implémentation de la navigation. En effet, en cliquant sur un bouton "Détail" l'utilisateur doit naviguer de la liste des séries vers une page affichant les détails de la série sélectionnée. 
+
+== Récupération des données avec le client Http
+
+Notre application est fonctionnelle mais les données réèlles se trouvent encore coté serveur. Le client http doit vous permettre de faire le lien avec entre l'application Vue.js et l'API Rest développée au TP 3.
