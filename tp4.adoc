@@ -2,9 +2,9 @@
 
 == Mise en place de l'environnement
 
-Pour ce TP, il nous faut disposer d'un serveur web qui pourra servir du HTML et du Javascript (évetuellement du CSS). Nous allons utiliser le même serveur qu'au TP 2. En effet, via une JSP, nous allons générer une page Web qui va contenir tout le code permettrant de démarrer une application Vue.js.
+Pour ce TP, il nous faut disposer d'un serveur web qui pourra servir du HTML et du Javascript (évetuellement du CSS). Nous allons utiliser le même serveur qu'au TP 2. En effet, via une JSP, nous allons générer une page Web qui va contenir tout le code permettant de démarrer une application Vue.js.
 
-Pour récupérer les fichiers Javascript de Vue.js ainsi que du Router et du client Http, nous utiliserons le mécanisme des WebJars. Les WebJars sont des archives (des jars) disponibles sur internet. Ces archives contiennent des éléments Javascript que nous pourrons utiliser dans notre application. L'avantage des WebJars est que ces derniers s'intègrent bien au mécanisme de gestion des dépendances Gradle. Nous aurons donc uniquement à des déclarer des dépendances dans le fichier `build.gradle` pour récupérer automatiquement tous les fichiers javascript dont nous avons besoin. Le fichier `build.gradle` du projet aura la forme suivante: 
+Pour récupérer les fichiers Javascript de Vue.js ainsi que du Router et du client Http, nous utiliserons le mécanisme des WebJars. Les WebJars sont des archives (des jars) disponibles sur internet. Ces archives contiennent des éléments Javascript que nous pourrons utiliser dans notre application. L'avantage des WebJars est que ces derniers s'intègrent bien au mécanisme de gestion des dépendances Gradle. Nous aurons donc uniquement à déclarer des dépendances dans le fichier `build.gradle` pour récupérer automatiquement tous les fichiers javascript dont nous avons besoin. Le fichier `build.gradle` du projet aura la forme suivante: 
 
 [source]
 ----
