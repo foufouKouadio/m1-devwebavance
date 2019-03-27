@@ -20,3 +20,4 @@
 
 * https://git.univ-pau.fr/m1tidevwebavance/jsp-servlet-example[JSP et Servlets]
 * https://git.univ-pau.fr/m1tidevwebavance/spring-boot-rest-api-example[Spring Boot Rest Api]
+* https://git.univ-pau.fr/m1tidevwebavance/vuejs-example[Vue.js]
