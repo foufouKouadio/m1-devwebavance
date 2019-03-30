@@ -1,0 +1,66 @@
+= Projet Final - Gestion des inscriptions à l'UPPA
+
+== Contexte
+
+La diretion du numérique de l'UPPA cherche un nouveau progiciel de gestion de la scolarité pour l'université. Vous avez répondu à l'appel d'offre et vous avez été retenu.
+
+== Rappel du cahier des charges
+
+L'application envisagée doit permettre de gérer l'intégralité des formations diplomantes de l'établissement ainsi que les inscriptions des étudiants. 
+
+=== Saisie des formations
+
+Un gestionnaire doit, au fil de l'eau, effectuer la saisie des formations et de tout leur détail selon le modèle suivant : 
+
+* Diplome
+** Id
+** Code
+** Libellé
+** Descriptif détaillé
+** Type de diplôme
+** Enseignant responsable
+** Liste des unités d'enseignement
+
+Le type de diplôme est à choisir parmi une liste ouverte (l'application est livrée avec des valeurs par défaut mais le gestionnaire peut compléter avec des types de diplômes particuliers à l'établissement)
+
+Les unités d'enseignement sont définies de la manière suivante : 
+
+* Id
+* Code 
+* Libellé
+* Obligatoire ou non
+
+Tant que le gestionnaire n'a pas terminé la saisie des formations, aucun étudiant ne peut s'inscrire. 
+
+=== Inscription à une formation
+
+Dès que les inscriptions sont ouvertes, les étudiants ont accès au catalogue des formations. Le catalogue consiste en une liste des diplômes qui ont été précedemment saisis. Un étudiant pourra consulter le détail d'une formation en cliquant sur celle-ci dans la liste. 
+
+En complément de cette liste, l'application met à disposition un moteur de recherche pour l'instant basique qui permet de rechercher une formation par son code ou par son libellé.
+
+Quand l'étudiant aura fait son choix, il peut démarrer l'inscription à une formation. Lors de ce processus, il va renseigner son état civil, ses renseignements administratifs (adresse et numéro de portable) ainsi que la liste des unités d'enseignement non obligatoires auxquelles il souhaite assister.
+
+A tout moment il peut quitter le processus d'inscription. Il pourra y revenir par la suite en saisissant le code du dossier d'inscription qui lui aura été attribué lors de son premier passage.
+
+Du moment où l'étudiant a terminé son inscription, il demande sa validation en cliquant sur un bouton et ne peut plus modifier l'inscription.
+
+=== Tableau de bord
+
+Les gestionnaires doivent à tout moment pouvoir consulter une liste d'indicateurs par l'intermédiaire d'un tableau de bord récapitulant le nombre total d'inscriptions, le nombre d'inscriptions validées par les étudiants et le nombre d'inscriptions à valider par les étudiants.
+
+== Prérequis techniques
+
+L'application doit être accessible par le web. Une deuxième phase du projet prévoit pour plus tard une consultation sur une application mobile. Il est donc nécessaire de bien découpler la partie cliente et la partie serveur. Nous auron ainsi un module API Rest (Spring, Spring Boot, JPA) et un module client pour navigateur (JSP, Vue.js). 
+
+Les modules devront être assemblés via l'outil Gradle et mis à disposition sur la plateforme Git de l'établissement pour évaluation avant validation finale et mise en production.
+
+== Compléments
+
+L'application se décompose en deux parties : 
+
+* Espace gestionnaire
+** Saisie des formations
+** Tableau de bord
+* Espace inscriptions
+
+Dans le cadre du projet, on ne gère pas l'authentification à l'espace gestionnaire pour plus de simplicité.

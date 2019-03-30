@@ -30,4 +30,5 @@ asciidoctor.convertFile('tp1.adoc', compilePagesOptions);
 asciidoctor.convertFile('tp2.adoc', compilePagesOptions); 
 asciidoctor.convertFile('tp3.adoc', compilePagesOptions); 
 asciidoctor.convertFile('tp4.adoc', compilePagesOptions); 
+asciidoctor.convertFile('projet.adoc', compilePagesOptions); 
 asciidoctor.convertFile('index.adoc', compilePagesOptions); 
