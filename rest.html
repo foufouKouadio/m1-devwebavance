@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>REST</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="node_modules/reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="node_modules/reveal.js/css/theme/black.css" id="theme"><link href="node_modules/reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? "node_modules/reveal.js/css/print/pdf.css" : "node_modules/reveal.js/css/print/paper.css";
+document.getElementsByTagName( 'head' )[0].appendChild( link );</script><!--[if lt IE 9]><script src="node_modules/reveal.js/lib/js/html5shiv.js"></script><![endif]--></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>REST</h1></section><section id="representational_state_transfer"><h2>Representational state transfer</h2><div class="ulist"><ul><li><p>Mode de communication client-serveur sur HTTP</p></li><li><p>Taillé pour de la communication Machine-To-Machine</p></li><li><p>Ensemble de règles et de pratiques qui ont pour but de standardiser les échanges</p></li><li><p>Indépendance vis-à-vis de quelconque langage d&#8217;implémentation sous-jacent</p></li></ul></div></section>
+<section id="representational_state_transfer_2"><h2>Representational state transfer</h2><div class="ulist"><ul><li><p>Plus léger que le protocole SOAP, il s&#8217;est imposé comme un des standards actuels</p></li><li><p>D&#8217;autres protocoles de communication Machine-To-Machine existent</p><div class="ulist"><ul><li><p>gRPC</p></li></ul></div></li><li><p>Pas de conservation de l&#8217;état entre deux requêtes</p></li></ul></div></section>
+<section id="la_philosophie_de_rest"><h2>La philosophie de REST</h2><div class="ulist"><ul><li><p>Exposer des ressources (entités ?) sur des URLs immutables accessibles selon une ou plusieurs méthodes</p></li></ul></div></section>
+<section id="http_s"><h2>HTTP(S)</h2><div class="ulist"><ul><li><p>Protocole de communication de niveau applicatif (Niveau 7) se basant sur la couche de transport TCP (Niveau 4)</p></li><li><p>Port 80 : HTTP</p></li><li><p>Port 443 : HTTPS</p></li><li><p>Le client utilise des commmandes (ou méthodes ou verbes) prédéfinies dans le protocole pour échanger avec le serveur</p></li></ul></div></section>
+<section id="requte_http"><h2>Requête HTTP</h2><div class="imageblock plantuml" style=""><img src="http://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBEoKpDAr7GjLC8JYqgIoqjibBm20a9K0XABInDBIw1oTleOiWN5-Jd5QToEQJcfG0D0W00" alt="http-request-response"></div></section>
+<section id="anatomie_d_une_requte_http"><h2>Anatomie d&#8217;une requête HTTP</h2><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:50%"><col style="width:50%"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Commande</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">GET / HTTP/1.1</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Request headers</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Host: example.com</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Body (Optionnel)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Ce qu&#8217;on veut envoyer au serveur</p></td></tr></table></section>
+<section id="requte_http_2"><h2>Requête HTTP</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="bash language-bash">$ telnet example.com 80
+Trying 2606:2800:220:1:248:1893:25c8:1946...
+Connected to example.com.
+Escape character is '^]'.
+GET / HTTP/1.1
+Host: example.com</code></pre></div></div></section>
+<section id="anatomie_d_une_rponse_http"><h2>Anatomie d&#8217;une réponse HTTP</h2><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:50%"><col style="width:50%"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Reponse headers</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">content-encoding: gzip</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Body (Optionnel)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Ce que renvoie le serveur</p></td></tr></table></section>
+<section id="json"><h2>JSON</h2><div class="ulist"><ul><li><p>Javascript Object Notation</p></li><li><p>Format d&#8217;échange de données standardisé</p><div class="ulist"><ul><li><p>Dépasse les frontières du JS depuis longtemps</p></li></ul></div></li><li><p>Deux types de structures de données</p><div class="ulist"><ul><li><p>collection (non ordonnée) de paires clé/valeur</p></li><li><p>liste ou tableau (ordonnés) de valeurs ou d&#8217;objets</p></li></ul></div></li></ul></div></section>
+<section id="json_2"><h2>JSON</h2><div class="ulist"><ul><li><p>Les types primitifs</p><div class="ulist"><ul><li><p>string</p></li><li><p>number</p></li><li><p>boolean</p></li><li><p>object</p></li><li><p>array</p></li><li><p>null</p></li></ul></div></li></ul></div></section>
+<section id="json_exemple"><h2>JSON (Exemple)</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">{
+    "id" : "111",
+    "nom" : "Doe",
+    "prenom" : "John",
+    "adresses" : [
+        {
+            "rue" : "2 avenue Foch",
+            "cp" : "64000",
+            "ville" : "Pau"
+        }
+        ....
+    ]
+}</code></pre></div></div></section>
+<section id="les_verbes_http"><h2>Les verbes HTTP</h2><div class="ulist"><ul><li><p>Les verbes donnent une sémantique à la requête</p></li><li><p>Il y en a 9 au total</p></li><li><p>5 "principaux" sont les plus utilisés</p><div class="ulist"><ul><li><p>GET</p></li><li><p>POST</p></li><li><p>PUT</p></li><li><p>DELETE</p></li><li><p>OPTIONS</p></li></ul></div></li></ul></div></section>
+<section id="get"><h2>GET</h2><div class="ulist"><ul><li><p>Utilisé pour de la consultation de ressources</p></li><li><p>Permet de récupérer une entité simple ou une liste d&#8217;entités</p></li><li><p>Une requête GET n&#8217;a pas de body</p></li><li><p>Les informations sont envoyées soit par</p><div class="ulist"><ul><li><p>des "path params" : composants du chemin qui seront récupérés par le parsing de ce dernier</p></li><li><p>des "query params" : liste de paires clé/valeur se trouvant dans l&#8217;url après le "?"</p></li></ul></div></li></ul></div></section>
+<section id="get_quelques_exemples"><h2>GET (quelques exemples)</h2><div class="ulist"><ul><li><p>La liste des étudiants de l&#8217;université</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">GET https://monserveur.com/etudiants</code></pre></div></div>
+<div class="ulist"><ul><li><p>La liste des étudiants du M1 Informatique</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">GET https://monserveur.com/etudiants?promo=M1INFO</code></pre></div></div>
+<div class="ulist"><ul><li><p>L&#8217;étudiant dont le numéro est est 254633</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">GET https://monserveur.com/etudiants/254633</code></pre></div></div></section>
+<section id="post"><h2>POST</h2><div class="ulist"><ul><li><p>Intention d&#8217;ajouter une nouvelle ressource dans le système</p></li><li><p>Les informations permettant de créer la ressource se trouvent dans le body de la requête</p></li><li><p>Les "path params" et "query params" seront envoyés mais il doit y avoir une sémantique qui se justifie</p></li><li><p>La réponse à la requête peut contenir le résultat de la création par l&#8217;application</p></li><li><p>Le format du body doit être précisé en tant que header pour que l&#8217;application puisse correctement désérialiser les données envoyées</p></li></ul></div></section>
+<section id="post_exemple"><h2>POST (exemple)</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">POST https://monserveur.com/etudiants</code></pre></div></div>
+<div class="ulist"><ul><li><p>Request Body</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">{
+    "nom": "John",
+    "prenom": "Doe",
+}</code></pre></div></div>
+<div class="ulist"><ul><li><p>Response Body</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">{
+    "id": 1895,
+    "nom": "John",
+    "prenom": "Doe",
+    "villeDeNaissance": "Non Précisée"
+}</code></pre></div></div></section>
+<section id="put"><h2>PUT</h2><div class="ulist"><ul><li><p>Intention de modifier une ressource existante</p></li><li><p>L&#8217;identification de la ressource à modifier est en général contenue dans l&#8217;URL</p></li><li><p>Le body de la requête contient la nouvelle version de la ressource en intégralité</p></li><li><p>La réponse à la requête peut contenir le résultat de la modification de la ressource par l&#8217;application</p></li></ul></div></section>
+<section id="put_exemple"><h2>PUT (exemple)</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">PUT https://monserveur.com/etudiants/1895</code></pre></div></div>
+<div class="ulist"><ul><li><p>Request Body</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">{
+    "id": 1895,
+    "nom": "John",
+    "prenom": "Doe",
+    "villeDeNaissance": "New York"
+}</code></pre></div></div>
+<div class="ulist"><ul><li><p>Response Body</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">{
+    "id": 1895,
+    "nom": "John",
+    "prenom": "Doe",
+    "villeDeNaissance": "New York"
+}</code></pre></div></div></section>
+<section id="delete"><h2>DELETE</h2><div class="ulist"><ul><li><p>Intention de supprimer une ressource</p></li><li><p>La requête n&#8217;a pas de body</p></li><li><p>La réponse n&#8217;a pas de body non plus</p></li><li><p>L&#8217;identification de la ressource à supprimer est obligatoirement contenue dans l&#8217;URL</p></li></ul></div></section>
+<section id="delete_exemple"><h2>DELETE (exemple)</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="json language-json">DELETE https://monserveur.com/etudiants/1895</code></pre></div></div></section>
+<section id="options"><h2>OPTIONS</h2><div class="ulist"><ul><li><p>Permet de demander au serveur la faisabilité d&#8217;une requête sur une ressource</p><div class="ulist"><ul><li><p>Est-ce que la méthode POST est supportée pour cette ressource ?</p></li><li><p>Sous quels formats peut-on récupérer la ressource ?</p></li></ul></div></li><li><p>Utile pour faire des prévérifications</p></li></ul></div></section>
+<section id="les_codes_de_statut"><h2>Les codes de statut</h2><div class="ulist"><ul><li><p>Les codes sont des indications sur les résultats des traitements réalisés par le serveur</p></li><li><p>Les codes de statut sont standardisés</p><div class="ulist"><ul><li><p>Il est fortement déconseillé d&#8217;utiliser des codes de statuts personnalisés</p></li></ul></div></li></ul></div>
+<div class="paragraph"><p><a href="https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml" class="bare">https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml</a></p></div></section>
+<section id="les_codes_de_statut_2xx"><h2>Les codes de statut (2XX)</h2><div class="ulist"><ul><li><p>Codes de retour utilisés en cas de succès</p></li><li><p>La requête a pu être traitée sans erreur</p></li><li><p>Les plus connus</p><div class="ulist"><ul><li><p>200 OK: le plus neutre</p></li><li><p>201 CREATED: utile lors de la création d&#8217;une ressource en POST</p></li><li><p>204 NO CONTENT : utile en POST ou PUT si le serveur ne renvoie rien dans le body</p></li></ul></div></li></ul></div></section>
+<section id="les_codes_de_statut_3xx"><h2>Les codes de statut (3XX)</h2><div class="ulist"><ul><li><p>Indiquent en général une redirection qui peut-être permanente ou temporaire</p></li><li><p>La réponse contient un header "Location" qui précise la nouvelle URL de la ressource</p></li><li><p>Les plus connus</p><div class="ulist"><ul><li><p>300 Multiple Choices: la requête ne précisaient pas le format de réponse souhaité</p></li><li><p>307 Temporary Redirect : le client devrait aller voir ailleurs mais quand même repasser par là la prochaine fois</p></li></ul></div></li></ul></div></section>
+<section id="les_codes_de_statut_4xx"><h2>Les codes de statut (4XX)</h2><div class="ulist"><ul><li><p>Indiquent une erreur lors du traitement de la requête par l&#8217;application</p><div class="ulist"><ul><li><p>il s&#8217;agit plus d&#8217;une erreur "métier"</p></li></ul></div></li><li><p>Les plus connus</p><div class="ulist"><ul><li><p>400 Bad Request : le client a envoyé une requête incomplète ou au mauvais format</p></li><li><p>403 Forbidden : le client n&#8217;a pas les droits pour accéder à la ressource</p></li><li><p>404 Not Found : la ressource demandée n&#8217;existe pas ou plus</p></li></ul></div></li></ul></div></section>
+<section id="les_codes_de_statut_5xx"><h2>Les codes de statut (5XX)</h2><div class="ulist"><ul><li><p>Indiquent une erreur technique qui n&#8217;est pas dans le fonctionnement standard de l&#8217;application</p></li><li><p>Les plus connus</p><div class="ulist"><ul><li><p>500 Internal Server Error : peut être levé par une exception non catchée coté serveur</p></li><li><p>503 Service Unavailable : erreur potentiellement temporaire (surcharge par exemple)</p></li></ul></div></li></ul></div></section>
+<section id="les_principaux_types_de_headers"><h2>Les principaux types de headers</h2><div class="ulist"><ul><li><p>Request headers</p><div class="ulist"><ul><li><p>Host: developer.mozilla.org</p></li><li><p>User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0</p></li><li><p>Accept: application/json</p></li><li><p>Content-Type: application/json</p></li><li><p>Cookie: name=value; name2=value2; name3=value3</p></li></ul></div></li></ul></div></section>
+<section id="les_principaux_types_de_headers_2"><h2>Les principaux types de headers</h2><div class="ulist"><ul><li><p>Response headers</p><div class="ulist"><ul><li><p>Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure</p></li><li><p>Content-Type: application/json</p></li><li><p>Access-Control-Allow-Origin: *.univ-pau.fr</p></li><li><p>Server: Apache</p></li></ul></div></li></ul></div></section></div></div><script src="node_modules/reveal.js/lib/js/head.min.js"></script><script src="node_modules/reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+Reveal.initialize({
+  // Display controls in the bottom right corner
+  controls: true,
+  // Display a presentation progress bar
+  progress: true,
+  // Set a per-slide timing for speaker notes, null means none
+  defaultTiming: null,
+  // Display the page number of the current slide
+  slideNumber: true,
+  // Push each slide change to the browser history
+  history: true,
+  // Enable keyboard shortcuts for navigation
+  keyboard: true,
+  // Enable the slide overview mode
+  overview: true,
+  // Vertical centering of slides
+  center: true,
+  // Enables touch navigation on devices with touch input
+  touch: true,
+  // Loop the presentation
+  loop: false,
+  // Change the presentation direction to be RTL
+  rtl: false,
+  // Randomizes the order of slides each time the presentation loads
+  shuffle: false,
+  // Turns fragments on and off globally
+  fragments: true,
+  // Flags if the presentation is running in an embedded mode,
+  // i.e. contained within a limited portion of the screen
+  embedded: false,
+  // Flags if we should show a help overlay when the questionmark
+  // key is pressed
+  help: true,
+  // Flags if speaker notes should be visible to all viewers
+  showNotes: false,
+  // Global override for autolaying embedded media (video/audio/iframe)
+  // - null: Media will only autoplay if data-autoplay is present
+  // - true: All media will autoplay, regardless of individual setting
+  // - false: No media will autoplay, regardless of individual setting
+  autoPlayMedia: null,
+  // Number of milliseconds between automatically proceeding to the
+  // next slide, disabled when set to 0, this value can be overwritten
+  // by using a data-autoslide attribute on your slides
+  autoSlide: 0,
+  // Stop auto-sliding after user input
+  autoSlideStoppable: true,
+  // Enable slide navigation via mouse wheel
+  mouseWheel: false,
+  // Hides the address bar on mobile devices
+  hideAddressBar: true,
+  // Opens links in an iframe preview overlay
+  previewLinks: false,
+  // Theme (e.g., beige, black, league, night, serif, simple, sky, solarized, white)
+  // NOTE setting the theme in the config no longer works in reveal.js 3.x
+  //theme: Reveal.getQueryHash().theme || 'black',
+  // Transition style (e.g., none, fade, slide, convex, concave, zoom)
+  transition: Reveal.getQueryHash().transition || 'slide',
+  // Transition speed (e.g., default, fast, slow)
+  transitionSpeed: 'default',
+  // Transition style for full page slide backgrounds (e.g., none, fade, slide, convex, concave, zoom)
+  backgroundTransition: 'fade',
+  // Number of slides away from the current that are visible
+  viewDistance: 3,
+  // Parallax background image (e.g., "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'")
+  parallaxBackgroundImage: '',
+  // Parallax background size in CSS syntax (e.g., "2100px 900px")
+  parallaxBackgroundSize: '',
+
+  // The "normal" size of the presentation, aspect ratio will be preserved
+  // when the presentation is scaled to fit different resolutions. Can be
+  // specified using percentage units.
+  width: 1280,
+  height: 720,
+
+  // Factor of the display size that should remain empty around the content
+  margin: 0.1,
+
+  // Bounds for smallest/largest possible scale to apply to content
+  minScale: 0.2,
+  maxScale: 1.5,
+
+  // Optional libraries used to extend on reveal.js
+  dependencies: [
+      { src: 'node_modules/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'node_modules/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'node_modules/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'node_modules/reveal.js/plugin/zoom-js/zoom.js', async: true },
+      { src: 'node_modules/reveal.js/plugin/notes/notes.js', async: true }
+  ]
+});</script></body></html>

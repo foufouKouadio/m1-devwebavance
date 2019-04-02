@@ -1,0 +1,381 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Introduction à Vue.js</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="node_modules/reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="node_modules/reveal.js/css/theme/black.css" id="theme"><link href="node_modules/reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? "node_modules/reveal.js/css/print/pdf.css" : "node_modules/reveal.js/css/print/paper.css";
+document.getElementsByTagName( 'head' )[0].appendChild( link );</script><!--[if lt IE 9]><script src="node_modules/reveal.js/lib/js/html5shiv.js"></script><![endif]--></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>Introduction à Vue.js</h1></section><section id="gnralits"><h2>Généralités</h2><div class="ulist"><ul><li><p>Framework Javascript</p></li><li><p>Le coeur du framework est dédié à la couche présentation</p></li><li><p>But : faciliter la création de Single Page Applications</p></li><li><p>Possibilité de brancher des modules supplémentaires</p><div class="ulist"><ul><li><p>Routing : navigation intra-application</p></li><li><p>Client HTTP: communication avec le serveur</p></li></ul></div></li></ul></div></section>
+<section id="single_page_application"><h2>Single Page Application</h2><div class="ulist"><ul><li><p>Concept de développement d&#8217;applications clientes riches en Javascript</p></li><li><p>L&#8217;application est démarrée au chargement de la page</p></li><li><p>Elle gère l&#8217;intégralité des intéractions avec l&#8217;utilisateur</p></li><li><p>Tout au long de la navigation, la page n&#8217;est jamais rechargée</p></li><li><p>Le DOM (Document Object Model) est réécrit au fur et à mesure</p></li></ul></div></section>
+<section id="une_application_minimale_avec_vue_js"><h2>Une application minimale avec Vue.js</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;div id="application"&gt;
+  {{ message }}
+&lt;/div&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">var app = new Vue({
+  el: '#application',
+  data: {
+    message: 'Welcome !'
+  }
+})</code></pre></div></div></section>
+<section id="fonctionnement_gnral"><h2>Fonctionnement général</h2><div class="ulist"><ul><li><p>On créé un élément racine clairement identifié</p><div class="ulist"><ul><li><p>Ici le <code>div</code> avec un id <code>#application</code></p></li><li><p>Contient le template</p></li></ul></div></li><li><p>Le javascript créé une nouvelle instance de Vue qui prend en paramètre un objet</p><div class="ulist"><ul><li><p>l&#8217;attribut <code>el</code> référence l&#8217;élément racine dans le DOM</p></li><li><p><code>data</code> est un objet qui contient toutes les données permettant en autre de valoriser les éléments du template</p></li></ul></div></li></ul></div></section>
+<section id="templating_texte"><h2>Templating : texte</h2><div class="ulist"><ul><li><p>Les expressions qui sont entourées par deux accolades seront valorisées de manière réactive</p><div class="ulist"><ul><li><p>Syntaxe "moustache"</p></li><li><p>Avec des propriétés de <code>data</code></p></li><li><p>Ne fonctionne pas si les propriétés sont rajoutées après intanciation de l&#8217;objet Vue</p></li></ul></div></li></ul></div></section>
+<section id="templating_texte_2"><h2>Templating : texte</h2><div class="ulist"><ul><li><p>Chaque changement sur une propriété rafraichi automatiquement le DOM</p></li><li><p>Pour ne faire le rendu qu&#8217;une seul fois, il est possible de rajouter la directive <code>v-once</code></p></li></ul></div></section>
+<section id="templating_texte_exemples"><h2>Templating : texte - Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;div&gt;{{ message }}&lt;/div&gt;
+&lt;div v-once&gt;{{ message }}&lt;/div&gt;</code></pre></div></div></section>
+<section id="templating_attributs"><h2>Templating : attributs</h2><div class="ulist"><ul><li><p>Impossible d&#8217;utiliser la syntaxe moustache pour valoriser les attributs</p></li><li><p>Directive <code>v-bind</code></p><div class="ulist"><ul><li><p>Utilisation : <code>v-bind:&lt;nom_attribut&gt;=""</code></p></li></ul></div></li></ul></div></section>
+<section id="expressions_javascript_standards"><h2>Expressions Javascript Standards</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">{{ valid ? 'VALIDE' : 'INVALIDE' }}
+
+{{ message.trim().toUpperCase() }}
+
+&lt;div v-bind:index="value + 1"&gt;...&lt;/div&gt;</code></pre></div></div></section>
+<section id="affichage_conditionnel"><h2>Affichage conditionnel</h2><div class="ulist"><ul><li><p>Directive <code>v-if</code></p></li><li><p>L&#8217;élément sur lequel la directive est appliquée sera affiché si l&#8217;expression est évaluée à vrai</p><div class="ulist"><ul><li><p>Si l&#8217;expression est "fausse", l&#8217;élément ne se retrouvera pas du tout dans le DOM</p></li></ul></div></li><li><p>Directives <code>v-else</code> et <code>v-else-if</code> associées</p></li><li><p>Réactif à la détection des changements</p></li></ul></div></section>
+<section id="affichage_conditionnel_exemples"><h2>Affichage conditionnel - Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;div v-if="my-expression"&gt;
+  Je passe dans le if
+&lt;/div&gt;
+&lt;div v-else-if="my-other-expression"&gt;
+  Je passe dans le else if
+&lt;/div&gt;
+&lt;div v-else&gt;
+  Je passe dans le else
+&lt;/div&gt;</code></pre></div></div></section>
+<section id="affichage_conditionnel_alternative"><h2>Affichage conditionnel - Alternative</h2><div class="ulist"><ul><li><p>Directive <code>v-show</code></p></li><li><p>Dans tous les cas l&#8217;élément associé sera dans le DOM</p></li><li><p>L&#8217;affichage sera conditionné par l&#8217;attribut CSS display</p></li></ul></div></section>
+<section id="affichage_de_listes"><h2>Affichage de listes</h2><div class="ulist"><ul><li><p>Directive <code>v-for</code></p></li><li><p>L&#8217;expression associée déclare la liste sur laquelle on itère ainsi que la variable d&#8217;itération</p><div class="ulist"><ul><li><p><code>v-for="etudiant in etudiants"</code></p></li></ul></div></li><li><p>Le contenu de l&#8217;élement associé à la directive est un template</p><div class="ulist"><ul><li><p>Le template sera valué à chaque passage de boucle</p></li><li><p>Les éléments de DOM résultants seront ajoutés dans le DOM</p></li></ul></div></li></ul></div></section>
+<section id="affichage_des_listes_exemples"><h2>Affichage des listes - Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;ul id="lesEtudiants"&gt;
+  &lt;li v-for="etudiant in etudiants"&gt;
+    {{ etudiant.nom }} - {{ etudiant.prenom }}
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre></div></div></section>
+<section id="affichage_des_listes_dtection_des_changements"><h2>Affichage des listes - Détection des changements</h2><div class="ulist"><ul><li><p>Toutes les méthodes de manipulation des tableaux sont compatibles avec la détection des changements</p></li><li><p>L&#8217;affecttion d&#8217;une nouvelle instance de tableau à un attribut de <code>data</code> déclenchera la mise à jour de la Vue</p></li><li><p>Bémol : le remplacement d&#8217;une valeur directement à une index du tableau ne sera pas détecté</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">app.etudiants[2] = { nom : "Snow", prenom : "John"}</code></pre></div></div></section>
+<section id="gestion_des_vnements"><h2>Gestion des évènements</h2><div class="ulist"><ul><li><p>Evènements standards Javascript</p><div class="ulist"><ul><li><p>click</p></li><li><p>keypress</p></li><li><p>dblclick</p></li></ul></div></li><li><p>Utilisation d&#8217;une directive <code>v-on</code> associèe</p><div class="ulist"><ul><li><p>v-on:click</p></li><li><p>v-on:keypress</p></li><li><p>&#8230;&#8203;</p></li></ul></div></li></ul></div></section>
+<section id="gestion_des_vnements_exemples"><h2>Gestion des évènements - Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;div id="compteur"&gt;
+  &lt;button v-on:click="tick += 1"&gt;{{ tick }}&lt;/button&gt;
+&lt;/div&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">var compteur = new Vue({
+  el: '#compteur',
+  data: {
+    tick: 0
+  }
+})</code></pre></div></div></section>
+<section id="dclaration_de_mthodes"><h2>Déclaration de méthodes</h2><div class="ulist"><ul><li><p>Les méthodes pourront être déclarées dans un objet <code>methods</code> passés à l&#8217;instanciation de l&#8217;objet Vue</p></li><li><p>Pour utiliser les attributs de <code>data</code>, on référence la Vue avec la variable this</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape>var app = new Vue({
+  el: '#application',
+  data: {
+    message: 'Welcome !'
+  }
+  methods: {
+    alertMessage : function() {
+      alert(this.message);
+    }
+  }
+})</code></pre></div></div></section>
+<section id="gestion_des_inputs"><h2>Gestion des inputs</h2><div class="ulist"><ul><li><p>Il est souvent nécessaire d&#8217;associer les attributs de <code>data</code> avec les inputs</p></li><li><p>La directive <code>v-model</code> va synchroniser de manière réactive et bidirectionnelle</p><div class="ulist"><ul><li><p>Si l&#8217;utilisateur change la valeur de l&#8217;input, la valeur dans <code>data</code> est modifiée</p></li><li><p>Un changement dans la valeur contenue dans <code>data</code> met à jour l&#8217;input</p></li></ul></div></li></ul></div></section>
+<section id="gestion_des_inputs_exemples"><h2>Gestion des inputs - Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;input v-model="message"&gt;
+&lt;p&gt;{{ message }}&lt;/p&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;input type="checkbox" id="checkbox" v-model="checked"&gt;
+&lt;label for="checkbox"&gt;{{ checked }}&lt;/label&gt;</code></pre></div></div></section>
+<section id="gestion_des_inputs_exemples_2"><h2>Gestion des inputs - Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;div id='many-checkboxes'&gt;
+  &lt;input type="checkbox" id="jsp" value="JSP" v-model="technos"&gt;
+  &lt;label for="jps"&gt;JSP&lt;/label&gt;
+  &lt;input type="checkbox" id="rest" value="Rest" v-model="technos"&gt;
+  &lt;label for="rest"&gt;Rest&lt;/label&gt;
+  &lt;br&gt;
+  &lt;span&gt;Technos: {{ technos }}&lt;/span&gt;
+&lt;/div&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">new Vue({
+  el: '#many-checkboxes',
+  data: {
+    technos: []
+  }
+})</code></pre></div></div>
+<div class="ulist"><ul><li><p>Possiblité d&#8217;utiliser dynamiquement la propriété <code>value</code> avec la directive <code>v-bind</code></p></li></ul></div></section>
+<section id="model_modifiers"><h2>Model modifiers</h2><div class="ulist"><ul><li><p>Les modifiers ajoutent des traitements sur le model avant de l&#8217;assigner</p></li><li><p>Trois possibilités</p><div class="ulist"><ul><li><p>Lazy : retarde l&#8217;assignation au moment du <code>change</code> event (perte de focus)</p></li><li><p>Number : réalise la conversion avant l&#8217;assignation</p></li><li><p>Trim : supprime les espaces avant/après</p></li></ul></div></li><li><p>Combinaisons possibles</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;input v-model.lazy="msg" &gt;
+&lt;input v-model.trim.lazy="msg" &gt;</code></pre></div></div></section>
+<section id="les_composants"><h2>Les composants</h2></section>
+<section id="gnralits_2"><h2>Généralités</h2><div class="ulist"><ul><li><p>Les composants permettent d&#8217;encapsuler une partie de l&#8217;interface pour réutilisation</p></li><li><p>Les composants Vue sont eux même des instances de Vue réutilisables</p></li><li><p>Une application Vue peut être modélisée comme un arbre de composants</p></li></ul></div></section>
+<section id="attention"><h2>Attention !</h2><div class="ulist"><ul><li><p>L&#8217;abus de composants peut nuire à votre application</p></li><li><p>Il faut éviter de placer trop d&#8217;intelligence dans les composants</p><div class="ulist"><ul><li><p>Du code métier en particulier</p></li></ul></div></li></ul></div></section>
+<section id="dclarer_un_composant"><h2>Déclarer un composant</h2><div class="ulist"><ul><li><p>Chaque composant est référencé par un nom unique</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">Vue.component('detail-etudiant', { /* ... */ })</code></pre></div></div>
+<div class="ulist"><ul><li><p>Nommage</p><div class="ulist"><ul><li><p>Spinal Case : <code>detail-etudiant</code></p></li><li><p>Pascal Case : <code>DetailEtudiant</code> - On pourra utiliser le composant avec <code>&lt;DetailEtudiant/&gt;</code> ou <code>&lt;detail-etudiant/&gt;</code></p></li></ul></div></li></ul></div></section>
+<section id="utilisation_du_composant"><h2>Utilisation du composant</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;div id='gestionEtudiants'&gt;
+  &lt;div v-for="e in etudiants"&gt;
+    &lt;detail-etudiant ...&gt;
+    &lt;/detail-etudiant&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">new Vue({
+  el: '#gestionEtudiants',
+  data: {
+    etudiants: [...]
+  }
+})</code></pre></div></div></section>
+<section id="dclaration_globale_vs_locale"><h2>Déclaration globale VS locale</h2><div class="ulist"><ul><li><p>Globale</p><div class="ulist"><ul><li><p>Simple à utiliser</p></li><li><p>Le composant sera présent dans tous les cas même si on ne l&#8217;utilise pas</p></li></ul></div></li></ul></div></section>
+<section id="dclaration_globale_vs_locale_2"><h2>Déclaration globale VS locale</h2><div class="ulist"><ul><li><p>Locale</p><div class="ulist"><ul><li><p>Un composant est un objet assigné dans une variable</p></li><li><p>Les composants seront enregistrés lors de la création de l&#8217;instance de Vue</p></li><li><p>La déclaration locale apporte plus de contrôle (ex: sur le nommage d&#8217;une application à l&#8217;autre)</p></li></ul></div></li></ul></div></section>
+<section id="exemple_de_dclaration_locale"><h2>Exemple de déclaration locale</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">var Composant1 = { /* ... */ }
+var Composant2 = { /* ... */ }
+
+new Vue({
+  el: '#app',
+  components: {
+    'mon-composant': Composant1,
+    'composant-2': Component2
+  }
+})</code></pre></div></div></section>
+<section id="le_template"><h2>Le template</h2><div class="ulist"><ul><li><p>Le template du composant est passé en attribut à la déclaration</p></li><li><p>La syntaxe est identique à celle étudiée précédement</p></li><li><p>Le template sera parsé par le framework pour validation</p><div class="ulist"><ul><li><p>Il ne doit contenir qu&#8217;un seul élément racine (comme toute instance de Vue)</p></li></ul></div></li></ul></div></section>
+<section id="exemple_de_dclaration_du_template"><h2>Exemple de déclaration du template</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">Vue.component('detail-etudiant', {
+  data : ...
+  template : "&lt;div&gt;Hello from mon composant&lt;/div&gt;"
+});</code></pre></div></div></section>
+<section id="le_cas_particulier_des_data"><h2>Le cas particulier des data</h2><div class="ulist"><ul><li><p>Un composant est par définition réutilisable</p><div class="ulist"><ul><li><p>On peut avoir n instances du composant dans notre application</p></li></ul></div></li><li><p>Si les datas sont déclarées sous la forme d&#8217;un objet, les datas seront partagées par les toutes les instances</p></li><li><p>Pour remédier au problème, <code>data</code> doit être une fonction qui renvoie un objet</p><div class="ulist"><ul><li><p>Une nouvelle instance de data sera renvoyée pour chaque création d&#8217;instance de composant</p></li></ul></div></li></ul></div></section>
+<section id="exemple_de_dclaration_des_data"><h2>Exemple de déclaration des data</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">Vue.component('detail-etudiant', {
+  data : function() {
+    return {
+      a: 1,
+      b: 2
+    };
+  }
+  template: ...
+});</code></pre></div></div></section>
+<section id="proprits_des_composants"><h2>Propriétés des composants</h2><div class="ulist"><ul><li><p>Pour configurer le composant, il est primordial de pouvoir lui passer des données</p></li><li><p>On va déclarer des propriétés sur le composant</p></li><li><p>Les propriétés seront valorisables avec des attributs HTML classiques</p></li></ul></div></section>
+<section id="dclaration_des_proprits"><h2>Déclaration des propriétés</h2><div class="ulist"><ul><li><p>On passe un attribut <code>props</code> à la déclaration du composant</p></li><li><p>La version minimale consiste en un tableau contenant les noms des propriétés</p></li><li><p>Les noms doivent être déclarés en camelCase</p></li><li><p>A l&#8217;utilisation, on fera une conversion camelCase &#8594; spinal-case</p><div class="ulist"><ul><li><p>A particulier dû au fait qu&#8217;HTML est insensible à la casse en ce qui concerne les attributs</p></li></ul></div></li></ul></div></section>
+<section id="exemple_de_dclaration_des_proprits"><h2>Exemple de déclaration des propriétés</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">Vue.component('detail-etudiant', {
+  data : ...
+  template: ...
+  props: ['nom', 'prenom', 'anneeDeNaissance', 'inscrit', 'autresInformations']
+});</code></pre></div></div></section>
+<section id="typage_des_proprits"><h2>Typage des propriétés</h2><div class="ulist"><ul><li><p>Permet d&#8217;ajouter des contraintes</p></li><li><p>Documente de fait le composant</p></li><li><p>Une propriété peut être de plusieurs types possibles</p></li><li><p>Dans le cas où la valeur passée et la valeur attendue ne correspondent pas, affichage d&#8217;un warning dans la console à l&#8217;exécution</p></li><li><p>On ne passe plus un tableau mais un objet</p></li><li><p>Type possible : String, Number, Boolean, Array, Object, Function, Promise</p><div class="ulist"><ul><li><p>Attention aux effets de bord dans le cas d&#8217;une fonction</p></li></ul></div></li></ul></div></section>
+<section id="exemple_de_proprits_types"><h2>Exemple de propriétés typées</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">Vue.component('detail-etudiant', {
+  data : ...
+  template: ...
+  props: {
+    nom: String,
+    prenom: String,
+    anneeDeNaissance: Number,
+    inscrit: Boolean,
+    autresInformations: Object
+  }
+});</code></pre></div></div></section>
+<section id="valoriser_une_proprit_statique_ou_dynamiquement"><h2>Valoriser une propriété : statique ou dynamiquement</h2><div class="ulist"><ul><li><p>Dans le cas d&#8217;une utilisation directe de l&#8217;attribut correspondant, la propriété sera valorisée avec la chaîne de caractère entre guillemets</p></li><li><p>Pour aller chercher la données dans les datas, il faut utiliser la directive <code>v-bind</code></p></li><li><p>La directive est aussi utile dans le cas où la proprité est typée. La conversion vers le bon type se fera automatiquement</p></li></ul></div></section>
+<section id="exemples_de_valorisations_de_proprits"><h2>Exemples de valorisations de propriétés</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;detail-etudiant nom="Doe" prenom="John"&gt;&lt;/detail-etudiant&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;detail-etudiant nom="e.nom" prenom="e.prenom"&gt;&lt;/detail-etudiant&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;detail-etudiant v-bind:anneeDeNaissance="1980"&gt;&lt;/detail-etudiant&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;detail-etudiant v-bind:inscrit="true"&gt;&lt;/detail-etudiant&gt;</code></pre></div></div></section>
+<section id="accder__une_proprit_dans_le_composant"><h2>Accéder à une propriété dans le composant</h2><div class="ulist"><ul><li><p>Les propriétés deviennent des attributs (au sens objet) de l&#8217;instane du composant</p></li><li><p>On accède donc à la valeur via la variable <code>this</code></p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">Vue.component('detail-etudiant', {
+  data : ...
+  template: ...
+  props: ...
+  methods: {
+    sayHello: function() {
+      alert('Hello ' + this.prenom);
+    }
+  }
+});</code></pre></div></div></section>
+<section id="mise__jour_parent_enfant"><h2>Mise à jour Parent &#8594; Enfant</h2><div class="ulist"><ul><li><p>La mise à jour réactive ne se fait que dans le sens Parent &#8594; Enfant</p></li><li><p>Si la valeur change dans le parent, l&#8217;enfant aura aussitôt la nouvelle valeur à disposition</p></li><li><p>La mise à jout dans le sens inverse n&#8217;est pas autorisée et on trouvera les warnings correspodants dans la console</p></li></ul></div></section>
+<section id="validation_des_proprits"><h2>Validation des propriétés</h2><div class="ulist"><ul><li><p>Mécanisme qui vient en supplément du typage</p></li><li><p>Caractère obligatoire : <code>required: true</code></p></li><li><p>Valeur par défaut : <code>default: 42</code></p></li><li><p>Validateur custom : fonction qui prend un paramètre (la valeur de la propriété) et qui renvoi un booléen</p></li></ul></div></section>
+<section id="les_vnements"><h2>Les évènements</h2><div class="ulist"><ul><li><p>Les évènements (ou events) sont un moyen de déclencher un appel vers le parent</p><div class="ulist"><ul><li><p>et d&#8217;y faire remonter de l&#8217;information par la même occasion</p></li></ul></div></li><li><p>Contrairement aux propriétés, les évènements ne sont pas déclarés dans la définition du composant</p></li><li><p>Un évènement est référencé par son nom (Spinal Case très fortement conseillé)</p></li></ul></div></section>
+<section id="dclenchement_d_un_vnement"><h2>Déclenchement d&#8217;un évènement</h2><div class="ulist"><ul><li><p>Un évènement est déclenché à l&#8217;aide de la méthode <code>$emit</code></p></li><li><p>La méthode prend un argument obligatoire</p><div class="ulist"><ul><li><p>le nom de l&#8217;évènement</p></li></ul></div></li><li><p>Et un argument optionnel</p><div class="ulist"><ul><li><p>La valeur qui sera associée à la remontée d&#8217;évènement</p></li></ul></div></li></ul></div></section>
+<section id="exemples_de_dclenchement"><h2>Exemples de déclenchement</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">function() {
+  $emit('ok');
+}</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">function() {
+  $emit('valider-chaine', "Chaîne à valider");
+}</code></pre></div></div></section>
+<section id="capter_l_vnement_dans_le_parent"><h2>Capter l&#8217;évènement dans le parent</h2><div class="ulist"><ul><li><p>A l&#8217;utilisation du composant, on va capter les évènements grâce à la directive <code>v-on</code></p><div class="ulist"><ul><li><p>Exemple : <code>v-on:ok='alert("ok")'</code></p></li></ul></div></li><li><p>La valeur associée à l&#8217;évènement se trouvera dans un variable paradoxalement appelée <code>$event</code></p></li><li><p>Pour gérer la captation, on pourra soit spécifier une expression javascript standard, soit le nom d&#8217;une fonction appelée Handler</p></li></ul></div></section>
+<section id="exemples_de_captation"><h2>Exemples de captation</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;detail-etudiant v-on:valider="maj($event.nom)"&gt;&lt;/detail-etudiant&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;detail-etudiant v-on:valider="majHandler"&gt;&lt;/detail-etudiant&gt;</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">Vue.component('detail-etudiant', {
+  data : ...
+  template: ...
+  props: ...
+  methods: {
+    maj: function(nom) { /****/ }
+    majHandler: function(etudiant) { /****/ }
+  }
+});</code></pre></div></div></section>
+<section id="les_slots"><h2>Les slots</h2><div class="ulist"><ul><li><p>Un slot est un mécanisme qui va nous permettre de déclarer du contenu dans le parent, contenu qui viendra s&#8217;afficher au milieu du composant enfant</p></li><li><p><code>&lt;slot&gt;</code> est un élement particulier qui sera remplacé par le contenu se trouvant entre les balises du composant</p></li></ul></div></section>
+<section id="exemple_d_un_slot"><h2>Exemple d&#8217;un slot</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">Vue.component('page-title', {
+  template: '&lt;h1&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/h1&gt;'
+});</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;page-title&gt;Détail de l'étudiant&lt;/page-title&gt;</code></pre></div></div></section>
+<section id="routing_crer_des_application_multi_pages"><h2>Routing : créer des application multi-pages</h2></section>
+<section id="le_router"><h2>Le router</h2><div class="ulist"><ul><li><p>Vue.js offre un module complémentaire pour la navigation : le router</p></li><li><p>Le router va permettre à l&#8217;utilisateur de "changer de page"</p></li><li><p>C&#8217;est en fait un élément du DOM dont le contenu sera mis à jour par le router</p></li><li><p>Chaque "page" de l&#8217;application sera modélisée par un composant</p></li></ul></div></section>
+<section id="insertion_dans_le_template_de_l_application"><h2>Insertion dans le template de l&#8217;application</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;script src="https://unpkg.com/vue/dist/vue.js"&gt;&lt;/script&gt;
+&lt;script src="https://unpkg.com/vue-router/dist/vue-router.js"&gt;&lt;/script&gt;
+
+&lt;div id="app"&gt;
+  &lt;router-view&gt;&lt;/router-view&gt;
+&lt;/div&gt;</code></pre></div></div>
+<div class="ulist"><ul><li><p><code>router-view</code> est l&#8217;élément qui sera remplacé par du contenu</p></li></ul></div></section>
+<section id="les_routes"><h2>Les routes</h2><div class="ulist"><ul><li><p>Une route est une correspondane entre un chemin (dans l&#8217;url) et un composant Vue</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">const DetailEtudiant = { template: '&lt;div&gt;Détail étudiant&lt;/div&gt;' }
+
+const routes = [
+  { path: '/detail', component: DetailEtudiant }
+]</code></pre></div></div></section>
+<section id="les_routes_2"><h2>Les routes</h2><div class="ulist"><ul><li><p>Une fois la liste des routes complète, on instancie le router et pour terminer l&#8217;application</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">const router = new VueRouter({
+  routes: routes
+})
+
+const app = new Vue({
+  router: router;
+}).$mount('#app')</code></pre></div></div></section>
+<section id="paramtres_des_routes"><h2>Paramètres des routes</h2><div class="ulist"><ul><li><p>Le chemin d&#8217;un route peut contenir des placeholders qui rendront la route dynamique</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">const routes = [
+  { path: '/detail/:id', component: DetailEtudiant }
+]</code></pre></div></div>
+<div class="ulist"><ul><li><p>A l&#8217;exécution, ces paramètres sont accessibles dans un dictionnaire <code>params</code> attributs de l&#8217;objet <code>$route</code> accessible sur le composant</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">const DetailEtudiant = { template: '&lt;div&gt;
+  Détail étudiant {{ $route.params.id }}
+&lt;/div&gt;' }</code></pre></div></div></section>
+<section id="priorit_des_routes"><h2>Priorité des routes</h2><div class="ulist"><ul><li><p>Les routes déclarées en premier sont prioritaires en cas de multi-match</p></li><li><p>Utile pour la gestion des routes inconnues (type 404)</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">const NotFound = { template: '&lt;div&gt;Page non trouvée&lt;/div&gt;' }
+
+const routes = [
+  { path: '*', component: NotFound }
+]</code></pre></div></div></section>
+<section id="route_nomme"><h2>Route nommée</h2><div class="ulist"><ul><li><p>Quand l&#8217;application grossi, il devient interessant de nommer les routes</p></li><li><p>Moins sensible au refactoring, on peut changer les urls facilement</p></li><li><p>Il est parfois plus facile de mémoriser le nom plutôt que le chemin</p><div class="ulist"><ul><li><p>Ce dernier peut vite se rallonger</p></li></ul></div></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">const routes = [
+  { path: '/detail/:id', name: 'detail-etudiant', component: DetailEtudiant }
+]</code></pre></div></div></section>
+<section id="navigation_declarative"><h2>Navigation : declarative</h2><div class="ulist"><ul><li><p>On utilise le composant <code>&lt;router-link&gt;</code></p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;router-link to="'/detail/' + id"&gt;Go to Foo&lt;/router-link&gt;</code></pre></div></div>
+<div class="ulist"><ul><li><p>Dès qu&#8217;il y a des paramètres, il est recommander de nommer la route pour bénéficier de la valorisation automatique des paramètres du chemin</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="html language-html">&lt;router-link to="{ name: 'detail-etudiant', params: { id: id }"&gt;
+  Go to Foo
+&lt;/router-link&gt;</code></pre></div></div></section>
+<section id="navigation_programmatique"><h2>Navigation : programmatique</h2><div class="ulist"><ul><li><p>On appelle la méthode <code>push</code> sur le router</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">router.push('detail-etudiant')
+
+router.push({ path: '/detail' + this.currentEtudiant.id })
+
+router.push({ name: 'detail-etudiant', params: { id: this.currentEtudiant.id } })
+
+router.push({ path: '/rechercher', query: { nom: this.tokenNom } })</code></pre></div></div></section>
+<section id="navigation_programmatique_complments"><h2>Navigation : programmatique - Compléments</h2><div class="ulist"><ul><li><p>La méthode <code>replace</code> est identique à <code>push</code></p><div class="ulist"><ul><li><p>Elle remplace l&#8217;entrée courante dans l&#8217;historique plutôt que d&#8217;en ajouter une nouvelle</p></li></ul></div></li><li><p>La méthode <code>go</code> permet d&#8217;avancer ou de reculer de n pas dans l&#8217;historique du navigateur</p></li></ul></div></section>
+<section id="client_http"><h2>Client HTTP</h2></section>
+<section id="communiquer_avec_le_serveur"><h2>Communiquer avec le serveur</h2><div class="ulist"><ul><li><p>Dans la plupart des cas, l&#8217;application cliente n&#8217;est pas suffisante. Elle a besoin d&#8217;intéragir avec le serveur pour récupérer ou envoyer des données</p></li><li><p>Il existe des modules complémentaires à Vue pour la communication HTTP avec le serveur</p></li><li><p>Nous verrons ici le client vue-resource</p></li></ul></div></section>
+<section id="fonctionnalits_de_vue_resource"><h2>Fonctionnalités de vue-resource</h2><div class="ulist"><ul><li><p>Permet d&#8217;interroger une API Rest selon les verbes HTTP classiques : GET, POST, PUT, DELETE &#8230;&#8203;</p></li><li><p>Les retours d&#8217;appels serveur sont des Promises</p></li><li><p>Si on respecte la philosophie des ressources REST, vue-resource offre des raccourcis</p></li></ul></div></section>
+<section id="les_promises"><h2>Les Promises</h2><div class="ulist"><ul><li><p>La clé du mécanisme d&#8217;un client HTTP est l&#8217;asynchronisme</p></li><li><p>Une opération sur le client faisant un appel vers le serveur ne doit pas être bloquante</p><div class="ulist"><ul><li><p>Le serveur répondra au bout d&#8217;un temps inderterminé</p></li></ul></div></li><li><p>Pour répondre à cette problématique, vue-resource renvoie des promises.</p></li><li><p>On va chainer à cette promesse une action de callback qui sera exécutée quand la promesse sera résolue</p></li></ul></div></section>
+<section id="exemple_de_requte_get"><h2>Exemple de requête GET</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">&lt;script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"&gt;&lt;/script&gt;
+&lt;script&gt;
+  this.$http.get('/etudiants').then(response =&gt; {
+    this.etudiants = response.body;
+  }, response =&gt; {
+    // traiter en cas d'erreur
+  });
+&lt;/script&gt;</code></pre></div></div></section>
+<section id="exemple_de_requte_post"><h2>Exemple de requête POST</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">&lt;script&gt;
+  this.$http.post('/etudiant', {nom: 'Doe', prenom: 'John'}).then(response =&gt; {
+    response.status;
+    response.statusText;
+    response.headers.get('Expires');
+    this.nouvelEtudiant = response.body;
+  }, response =&gt; {
+  });
+&lt;/script&gt;</code></pre></div></div></section>
+<section id="liste_complte_des_mthodes"><h2>Liste complète des méthodes</h2><div class="ulist"><ul><li><p>get(url, [config])</p></li><li><p>head(url, [config])</p></li><li><p>delete(url, [config])</p></li><li><p>jsonp(url, [config])</p></li><li><p>post(url, [body], [config])</p></li><li><p>put(url, [body], [config])</p></li><li><p>patch(url, [body], [config])</p></li></ul></div></section>
+<section id="crer_une_resource"><h2>Créer une resource</h2><div class="ulist"><ul><li><p>Dans le cas d&#8217;une API serveur répondant au pattern REST CRUD classique, on peut interagir avec l&#8217;API en déclarant une resource</p></li><li><p>L&#8217;implémentation des méthodes est réalisée automatiquement</p></li></ul></div></section>
+<section id="exemple_de_resource"><h2>Exemple de resource</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="js language-js">&lt;script&gt;
+  var resource = this.$resource('/etudiant{/id}');
+
+  resource.get({id: 1}).then(response =&gt; {
+    this.etudiant = response.body;
+  });
+
+  resource.save({id: 1}, {item: this.item}).then(response =&gt; {
+  }, response =&gt; {
+  });
+
+  resource.delete({id: 1}).then(response =&gt; {
+  }, response =&gt; {});
+&lt;/script&gt;</code></pre></div></div></section></div></div><script src="node_modules/reveal.js/lib/js/head.min.js"></script><script src="node_modules/reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+Reveal.initialize({
+  // Display controls in the bottom right corner
+  controls: true,
+  // Display a presentation progress bar
+  progress: true,
+  // Set a per-slide timing for speaker notes, null means none
+  defaultTiming: null,
+  // Display the page number of the current slide
+  slideNumber: true,
+  // Push each slide change to the browser history
+  history: true,
+  // Enable keyboard shortcuts for navigation
+  keyboard: true,
+  // Enable the slide overview mode
+  overview: true,
+  // Vertical centering of slides
+  center: true,
+  // Enables touch navigation on devices with touch input
+  touch: true,
+  // Loop the presentation
+  loop: false,
+  // Change the presentation direction to be RTL
+  rtl: false,
+  // Randomizes the order of slides each time the presentation loads
+  shuffle: false,
+  // Turns fragments on and off globally
+  fragments: true,
+  // Flags if the presentation is running in an embedded mode,
+  // i.e. contained within a limited portion of the screen
+  embedded: false,
+  // Flags if we should show a help overlay when the questionmark
+  // key is pressed
+  help: true,
+  // Flags if speaker notes should be visible to all viewers
+  showNotes: false,
+  // Global override for autolaying embedded media (video/audio/iframe)
+  // - null: Media will only autoplay if data-autoplay is present
+  // - true: All media will autoplay, regardless of individual setting
+  // - false: No media will autoplay, regardless of individual setting
+  autoPlayMedia: null,
+  // Number of milliseconds between automatically proceeding to the
+  // next slide, disabled when set to 0, this value can be overwritten
+  // by using a data-autoslide attribute on your slides
+  autoSlide: 0,
+  // Stop auto-sliding after user input
+  autoSlideStoppable: true,
+  // Enable slide navigation via mouse wheel
+  mouseWheel: false,
+  // Hides the address bar on mobile devices
+  hideAddressBar: true,
+  // Opens links in an iframe preview overlay
+  previewLinks: false,
+  // Theme (e.g., beige, black, league, night, serif, simple, sky, solarized, white)
+  // NOTE setting the theme in the config no longer works in reveal.js 3.x
+  //theme: Reveal.getQueryHash().theme || 'black',
+  // Transition style (e.g., none, fade, slide, convex, concave, zoom)
+  transition: Reveal.getQueryHash().transition || 'slide',
+  // Transition speed (e.g., default, fast, slow)
+  transitionSpeed: 'default',
+  // Transition style for full page slide backgrounds (e.g., none, fade, slide, convex, concave, zoom)
+  backgroundTransition: 'fade',
+  // Number of slides away from the current that are visible
+  viewDistance: 3,
+  // Parallax background image (e.g., "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'")
+  parallaxBackgroundImage: '',
+  // Parallax background size in CSS syntax (e.g., "2100px 900px")
+  parallaxBackgroundSize: '',
+
+  // The "normal" size of the presentation, aspect ratio will be preserved
+  // when the presentation is scaled to fit different resolutions. Can be
+  // specified using percentage units.
+  width: 1280,
+  height: 720,
+
+  // Factor of the display size that should remain empty around the content
+  margin: 0.1,
+
+  // Bounds for smallest/largest possible scale to apply to content
+  minScale: 0.2,
+  maxScale: 1.5,
+
+  // Optional libraries used to extend on reveal.js
+  dependencies: [
+      { src: 'node_modules/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'node_modules/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'node_modules/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'node_modules/reveal.js/plugin/zoom-js/zoom.js', async: true },
+      { src: 'node_modules/reveal.js/plugin/notes/notes.js', async: true }
+  ]
+});</script></body></html>

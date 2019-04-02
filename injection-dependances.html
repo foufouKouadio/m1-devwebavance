@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Injection de dépendances avec Spring</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="node_modules/reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="node_modules/reveal.js/css/theme/black.css" id="theme"><link href="node_modules/reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? "node_modules/reveal.js/css/print/pdf.css" : "node_modules/reveal.js/css/print/paper.css";
+document.getElementsByTagName( 'head' )[0].appendChild( link );</script><!--[if lt IE 9]><script src="node_modules/reveal.js/lib/js/html5shiv.js"></script><![endif]--></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>Injection de dépendances avec Spring</h1></section><section id="composants"><h2>Composants</h2><div class="ulist"><ul><li><p>Composants d&#8217;une application</p><div class="ulist"><ul><li><p>Réception des requêtes HTTP</p></li><li><p>Gestion des règles métier</p></li><li><p>Appels à la base de données</p></li></ul></div></li><li><p>Les composants interagissent les uns avec les autres</p></li></ul></div></section>
+<section id="dpendance"><h2>Dépendance</h2><div class="ulist"><ul><li><p>Chaque composant dépend de un ou plusieurs autres composants</p></li><li><p>Hiérachie des composants</p><div class="ulist"><ul><li><p>Composants de haut niveau, de bas niveau</p></li><li><p>Pas de cycles possibles</p></li></ul></div></li></ul></div></section>
+<section id="exemple_rcupration_bdd"><h2>Exemple - Récupération BDD</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantsDao {
+    public List&lt;Eudiants&gt; findAllEtudiants() {
+        ....
+    }
+}</code></pre></div></div></section>
+<section id="exemple_controller_rest"><h2>Exemple - Controller REST</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantsController {
+
+    private EtudiantsDao dao = new EtudiantsDao();
+
+    @Get("/")
+    public List&lt;Eudiants&gt; etudiants() {
+        return dao.findAllEtudiants()
+    }
+}</code></pre></div></div></section>
+<section id="problme_1_manque_d_abstraction"><h2>Problème 1 - Manque d&#8217;abstraction</h2><div class="ulist"><ul><li><p>On utilise directement une implémentation</p><div class="ulist"><ul><li><p>Comment faire pour tester unitairement mon Controller ?</p></li><li><p>Dans deux ans, comment puis-je remplacer l&#8217;accès base par une interrogation d&#8217;API ?</p></li></ul></div></li></ul></div></section>
+<section id="problme_2"><h2>Problème 2</h2><div class="ulist"><ul><li><p>Nécessaire d&#8217;instancier manuellement le DAO</p><div class="ulist"><ul><li><p>Simple dans le cas de l&#8217;exemple</p></li><li><p>Le DAO n&#8217;a pas de paramètres (Connexion BDD ?)</p></li></ul></div></li><li><p>Les différents modules peuvent avoir des cycles de vie différents qu&#8217;il faut gérer</p></li><li><p>Quand l&#8217;application grossit, la complexité explose</p></li></ul></div></section>
+<section id="solution_1_dfinir_un_contrat"><h2>Solution 1 - Définir un contrat</h2><div class="ulist"><ul><li><p>Il est nécessaire de découpler l&#8217;implémentation du DAO de son contrat</p><div class="ulist"><ul><li><p>En Java, on passera par une interface</p></li><li><p>Possibilité de changer d&#8217;implémentation</p><div class="ulist"><ul><li><p>Pour les tests : une autre implémentation pourra renvoyer des données sans accéder à la base</p></li><li><p>Parce que les contraintes techniques peuvenet changer</p></li></ul></div></li><li><p>Pas de fuite des spécificités d&#8217;implémentation dans le reste du code</p></li></ul></div></li></ul></div></section>
+<section id="solution_1_inteface_de_contrat"><h2>Solution 1 - Inteface de contrat</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public interface EtudiantDao {
+    List&lt;Etudiant&gt; findAllEtudiants();
+}</code></pre></div></div></section>
+<section id="solution_1_implmentation_bdd"><h2>Solution 1 - Implémentation BDD</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantDaoBdd implements EtudiantDao {
+    public List&lt;Eudiants&gt; findAllEtudiants() {
+        // Accéder à la base de données
+    }
+}</code></pre></div></div></section>
+<section id="solution_1_rcriture_dans_le_controller"><h2>Solution 1 - Réécriture dans le controller</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantsController {
+
+    private EtudiantsDao dao = new EtudiantsDaoBDD();
+
+    @Get("/")
+    public List&lt;Eudiants&gt; etudiants() {
+        return dao.findAllEtudiants();
+    }
+}</code></pre></div></div></section>
+<section id="solution_1_implmentation_pour_les_tests"><h2>Solution 1 - Implémentation pour les tests</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantDaoTest implements EtudiantDao {
+    public List&lt;Eudiants&gt; findAllEtudiants() {
+        Etudiant etudiant = new Etudiant();
+        // ... peupler l'étudiant
+        return Arrays.asList(etudiant);
+    }
+}</code></pre></div></div></section>
+<section id="solution_2_inversion_of_control"><h2>Solution 2 - Inversion of control</h2><div class="ulist"><ul><li><p>Principe fondamental : les objets ne doivent pas créer les objets dont ils ont besoin pour assurer leur activité</p></li><li><p>La création et le cycle de vie sont délégués à des frameworks spécialisés</p></li><li><p>Pour garantir le principe fondamental, les frameworks réalisent l&#8217;injection de dépendances</p><div class="ulist"><ul><li><p>Ils viennent alimenter un objet avec les dépendances dont il a besoin</p></li></ul></div></li></ul></div></section>
+<section id="solution_2_exemple"><h2>Solution 2 - Exemple</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantsController {
+
+    @Inject
+    private EtudiantsDao dao;
+
+    @Get("/")
+    public List&lt;Eudiants&gt; etudiants() {
+        return dao.findAllEtudiants();
+    }
+}</code></pre></div></div></section>
+<section id="l_injection_de_dpendances_en_java"><h2>L&#8217;injection de dépendances en Java</h2><div class="ulist"><ul><li><p>Dagger</p></li><li><p>Guice</p></li><li><p><strong>Spring DI</strong></p></li><li><p>CDI</p></li></ul></div></section>
+<section id="spring_les_beans"><h2>Spring - Les beans</h2><div class="ulist"><ul><li><p>Toute forme d&#8217;instance managée par Spring est appelé <strong>Bean</strong></p></li></ul></div></section>
+<section id="configuraion_des_beans_2_possibilits"><h2>Configuraion des beans - 2 possibilités</h2><div class="ulist"><ul><li><p>Par fichiers XML</p><div class="ulist"><ul><li><p>Avantage : très peu intrusif dans le code, pas de dépendance technique vers Spring</p></li><li><p>Inconvénient : le XML est parfois verbeux</p></li></ul></div></li></ul></div></section>
+<section id="configuraion_des_beans_2_possibilits_2"><h2>Configuraion des beans - 2 possibilités</h2><div class="ulist"><ul><li><p>Par annotation</p><div class="ulist"><ul><li><p>Avantage : plus de simplicité, refactoring simplifié</p></li><li><p>Inconvénient : lien plus fort avec Spring</p></li></ul></div></li><li><p>Très pratique avec Spring Boot</p><div class="ulist"><ul><li><p>Scan du classpath</p></li></ul></div></li><li><p>Dans ce cours, nous utiliserons la configuration par annotations</p></li></ul></div></section>
+<section id="les_3_formes_d_injection_avec_spring"><h2>Les 3 formes d&#8217;injection avec Spring</h2><div class="ulist"><ul><li><p>Constructeur : les composants sont passés en paramètres à l&#8217;instanciation</p></li><li><p>Attribut : le composant est assigné directement à un attribut (même privé !)</p></li><li><p>Setter : le composant à injecter est passé au setter correspondant</p></li></ul></div></section>
+<section id="injection_constructeur"><h2>Injection - Constructeur</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantsController {
+
+    private EtudiantsDao dao;
+
+    @Inject
+    public EtudiantsController(EtudiantsDao dao) {
+        this.dao = dao;
+    }
+
+}</code></pre></div></div>
+<div class="ulist"><ul><li><p>Permet de 'prendre conscience' quand trop de composants sont injectés</p></li></ul></div></section>
+<section id="injection_attribut"><h2>Injection - Attribut</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantsController {
+
+    @Inject
+    private EtudiantsDao dao;
+
+}</code></pre></div></div>
+<div class="ulist"><ul><li><p>Simplicité mais pas forcément très conforme aux principes de l&#8217;orienté objet</p></li></ul></div></section>
+<section id="injection_setter"><h2>Injection - Setter</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">public class EtudiantsController {
+
+    private EtudiantsDao dao;
+
+    @Inject
+    public void setEtudiantDao(EtudiantDao dao) {
+        this.dao = dao;
+    }
+}</code></pre></div></div></section>
+<section id="dclarer_un_bean_directement_sur_le_type"><h2>Déclarer un bean - Directement sur le type</h2><div class="ulist"><ul><li><p>On pose une annotation <code>@Component</code> sur la classe d&#8217;implémentation</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@Component
+public class EtudiantDaoBdd implements EtudiantDao {
+    public List&lt;Eudiants&gt; findAllEtudiants() {
+    }
+}</code></pre></div></div></section>
+<section id="dclarer_un_bean_directement_sur_le_type_2"><h2>Déclarer un bean - Directement sur le type</h2><div class="ulist"><ul><li><p>Deux autres annotations sont à disposition</p><div class="ulist"><ul><li><p>@Service</p></li><li><p>@Repository</p></li></ul></div></li><li><p>Elles permettent de donner plus de sémantique</p></li></ul></div></section>
+<section id="dclarer_un_bean_dans_une_classe_de_configuration"><h2>Déclarer un bean - Dans une classe de configuration</h2><div class="ulist"><ul><li><p>La classe est annotée <code>@Configuration</code></p></li><li><p>Elle contient des méthodes annotée <code>@Bean</code> qui vont renvoyer une instance</p></li><li><p>La méthode peut prendre des paramètres qui seront injectés</p></li></ul></div></section>
+<section id="dclarer_un_bean_dans_une_classe_de_configuration_2"><h2>Déclarer un bean - Dans une classe de configuration</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@Configuration
+public class DaoConfiguration {
+
+    @Bean
+    public EtudiantDao etudiantDao(ConnexionBdd connexionBdd) {
+        ....
+    }
+}</code></pre></div></div></section>
+<section id="les_scopes_des_beans"><h2>Les scopes des beans</h2><div class="ulist"><ul><li><p>Selon le besoin, Spring peut fournir une nouvelle instance du bean (ou pas)</p></li><li><p>Les scopes possibles sont :</p><div class="ulist"><ul><li><p>singleton (défaut)</p></li><li><p>prototype</p></li><li><p>request</p></li><li><p>session</p></li><li><p>application</p></li><li><p>websocket</p></li></ul></div></li></ul></div></section>
+<section id="singleton"><h2>Singleton</h2><div class="ulist"><ul><li><p>Mode par défaut</p></li><li><p>On peut utiliser l&#8217;annotation <code>@Scope("singleton")</code></p></li><li><p>L&#8217;instance sera créée une bonne fois pour toute et toujours injectée</p></li><li><p>Attention à la gestion de l&#8217;étudiant</p></li></ul></div></section>
+<section id="prototype"><h2>Prototype</h2><div class="ulist"><ul><li><p>On peut utiliser l&#8217;annotation <code>@Scope("prototype")</code></p></li><li><p>L&#8217;instance sera créée à chaque fois qu&#8217;une injection est réalisée</p></li><li><p>Idéal pour disposer d&#8217;un contexte "propre" systématiquement</p></li></ul></div></section>
+<section id="request"><h2>Request</h2><div class="ulist"><ul><li><p>Pertinent seulement dans une contexte "Web"</p></li><li><p>On peut utiliser l&#8217;annotation <code>@RequestScope</code></p></li><li><p>Une nouvelle instance sera créée à chaque nouvelle requête</p></li><li><p>Utile pour gérer un état qui doit durer tout au long de la requête</p></li></ul></div></section>
+<section id="session"><h2>Session</h2><div class="ulist"><ul><li><p>Pertinent seulement dans une contexte "Web"</p></li><li><p>On peut utiliser l&#8217;annotation <code>@SessionScope</code></p></li><li><p>Une nouvelle instance sera créée à chaque nouvelle session</p></li><li><p>Exemple d&#8217;utilisation : gérer le panier d&#8217;un client sur un site marchand</p></li></ul></div></section>
+<section id="possibilits_additionnelles_avec_spring_boot"><h2>Possibilités additionnelles avec Spring Boot</h2><div class="ulist"><ul><li><p>Configuration de beans selon certaines conditions</p></li><li><p>Annotations sur les beans ou les classes de configuration</p><div class="ulist"><ul><li><p>Présence d&#8217;une classe dans le classpath</p></li><li><p>Présence d&#8217;un autre bean</p></li><li><p>Présence d&#8217;une propriété</p></li><li><p>Présence d&#8217;une ressource</p></li><li><p>Présence dans une application Web</p></li></ul></div></li></ul></div></section>
+<section id="exemples"><h2>Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@Configuration
+@ConditionalOnClass(MariaDbDriver.class)
+class MariaDbConfig {
+    //...
+}
+
+@Configuration
+@ConditionalOnClass(PostgresDriver.class)
+class PostgresConfig {
+    //...
+}</code></pre></div></div></section>
+<section id="exemples_2"><h2>Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@Bean
+@ConditionalOnBean(name = "etudiantDao")
+EtudiantService etudiantService(EtudiantDao dao) {
+    // ...
+}</code></pre></div></div></section>
+<section id="exemples_3"><h2>Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@Bean
+@ConditionalOnProperty(name = "schema.version", havingValue = "2")
+class AccesVersion2Dao {
+    //...
+}
+
+@Bean
+@ConditionalOnProperty(name = "schema.version", havingValue = "1")
+class AccesVersion1Dao {
+    //...
+}</code></pre></div></div></section>
+<section id="exemples_4"><h2>Exemples</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@ConditionalOnResource(resources = "classpath:etudiants.csv")
+EtudiantCsvReader etudiantCsvReader() {
+    // ...
+}</code></pre></div></div></section></div></div><script src="node_modules/reveal.js/lib/js/head.min.js"></script><script src="node_modules/reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+Reveal.initialize({
+  // Display controls in the bottom right corner
+  controls: true,
+  // Display a presentation progress bar
+  progress: true,
+  // Set a per-slide timing for speaker notes, null means none
+  defaultTiming: null,
+  // Display the page number of the current slide
+  slideNumber: true,
+  // Push each slide change to the browser history
+  history: true,
+  // Enable keyboard shortcuts for navigation
+  keyboard: true,
+  // Enable the slide overview mode
+  overview: true,
+  // Vertical centering of slides
+  center: true,
+  // Enables touch navigation on devices with touch input
+  touch: true,
+  // Loop the presentation
+  loop: false,
+  // Change the presentation direction to be RTL
+  rtl: false,
+  // Randomizes the order of slides each time the presentation loads
+  shuffle: false,
+  // Turns fragments on and off globally
+  fragments: true,
+  // Flags if the presentation is running in an embedded mode,
+  // i.e. contained within a limited portion of the screen
+  embedded: false,
+  // Flags if we should show a help overlay when the questionmark
+  // key is pressed
+  help: true,
+  // Flags if speaker notes should be visible to all viewers
+  showNotes: false,
+  // Global override for autolaying embedded media (video/audio/iframe)
+  // - null: Media will only autoplay if data-autoplay is present
+  // - true: All media will autoplay, regardless of individual setting
+  // - false: No media will autoplay, regardless of individual setting
+  autoPlayMedia: null,
+  // Number of milliseconds between automatically proceeding to the
+  // next slide, disabled when set to 0, this value can be overwritten
+  // by using a data-autoslide attribute on your slides
+  autoSlide: 0,
+  // Stop auto-sliding after user input
+  autoSlideStoppable: true,
+  // Enable slide navigation via mouse wheel
+  mouseWheel: false,
+  // Hides the address bar on mobile devices
+  hideAddressBar: true,
+  // Opens links in an iframe preview overlay
+  previewLinks: false,
+  // Theme (e.g., beige, black, league, night, serif, simple, sky, solarized, white)
+  // NOTE setting the theme in the config no longer works in reveal.js 3.x
+  //theme: Reveal.getQueryHash().theme || 'black',
+  // Transition style (e.g., none, fade, slide, convex, concave, zoom)
+  transition: Reveal.getQueryHash().transition || 'slide',
+  // Transition speed (e.g., default, fast, slow)
+  transitionSpeed: 'default',
+  // Transition style for full page slide backgrounds (e.g., none, fade, slide, convex, concave, zoom)
+  backgroundTransition: 'fade',
+  // Number of slides away from the current that are visible
+  viewDistance: 3,
+  // Parallax background image (e.g., "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'")
+  parallaxBackgroundImage: '',
+  // Parallax background size in CSS syntax (e.g., "2100px 900px")
+  parallaxBackgroundSize: '',
+
+  // The "normal" size of the presentation, aspect ratio will be preserved
+  // when the presentation is scaled to fit different resolutions. Can be
+  // specified using percentage units.
+  width: 1280,
+  height: 720,
+
+  // Factor of the display size that should remain empty around the content
+  margin: 0.1,
+
+  // Bounds for smallest/largest possible scale to apply to content
+  minScale: 0.2,
+  maxScale: 1.5,
+
+  // Optional libraries used to extend on reveal.js
+  dependencies: [
+      { src: 'node_modules/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'node_modules/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'node_modules/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'node_modules/reveal.js/plugin/zoom-js/zoom.js', async: true },
+      { src: 'node_modules/reveal.js/plugin/notes/notes.js', async: true }
+  ]
+});</script></body></html>

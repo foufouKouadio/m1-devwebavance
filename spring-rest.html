@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Spring Rest</title><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"><link href="node_modules/reveal.js/css/reveal.css" rel="stylesheet"><link rel="stylesheet" href="node_modules/reveal.js/css/theme/black.css" id="theme"><link href="node_modules/reveal.js/lib/css/zenburn.css" rel="stylesheet"><script>var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? "node_modules/reveal.js/css/print/pdf.css" : "node_modules/reveal.js/css/print/paper.css";
+document.getElementsByTagName( 'head' )[0].appendChild( link );</script><!--[if lt IE 9]><script src="node_modules/reveal.js/lib/js/html5shiv.js"></script><![endif]--></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>Spring Rest</h1></section><section id="gnralits"><h2>Généralités</h2><div class="ulist"><ul><li><p>Permet d&#8217;implémenter un architecture de type REST</p></li><li><p>On va déclarer des méthodes et leur associer des routes</p><div class="ulist"><ul><li><p>Via des annotations</p></li></ul></div></li><li><p>Spring Web se charge de router les requêtes vers la bonne méthode</p></li></ul></div></section>
+<section id="srialisation_desrialisation"><h2>Sérialisation/Desérialisation</h2><div class="ulist"><ul><li><p>L&#8217;application peut recevoir des requêtes avec un body dans un format particulier</p><div class="ulist"><ul><li><p>Ici du JSON, mais on peut choisir du XML ou du YAML</p></li></ul></div></li><li><p>Idem pour les réponses</p><div class="ulist"><ul><li><p>Le format n&#8217;est pas forcément le même que celui de la requête</p></li></ul></div></li></ul></div></section>
+<section id="srialisation_desrialisation_2"><h2>Sérialisation/Desérialisation</h2><div class="ulist"><ul><li><p>Spring utilise la bibliothèque Jackson pour prendre en charge le processus</p><div class="ulist"><ul><li><p>Transparent pour le développeur</p></li><li><p>On reçoit/revoie des objets Java</p></li></ul></div></li><li><p>Dans les cas plus poussés où Jackson n&#8217;est pas capable de faire la transformation, il est possible de passer ses propres mappers de transformation</p></li></ul></div></section>
+<section id="le_contrleur_rest"><h2>Le contrôleur (REST)</h2><div class="ulist"><ul><li><p>Point d&#8217;entrée pour une partie de requêtes de l&#8217;application</p></li><li><p>Il n&#8217;y a qu&#8217;une instance du contrôleur au sein de l&#8217;application</p><div class="ulist"><ul><li><p>Attention à la gestion de l&#8217;état</p></li></ul></div></li><li><p>Pas de nécessité d&#8217;hériter d&#8217;une classe particulière</p></li><li><p>La classe sera annotée avec <code>@Controller</code> ou <code>@RestController</code></p></li><li><p>L&#8217;annotation <code>@RequestMapping</code> permet de définir le chemin de la route de base</p></li></ul></div></section>
+<section id="code_controller_code_vs_code_restcontroller_code"><h2><code>@Controller</code> vs <code>@RestController</code></h2><div class="ulist"><ul><li><p><code>@Controller</code> n&#8217;est pas spécifique à l&#8217;implémentation de REST</p><div class="ulist"><ul><li><p>Il sera nécessaire de de rajouter l&#8217;annoation <code>@ResponseBody</code> pour forcer la sérialisation du type de retour</p></li></ul></div></li><li><p><code>@RestController</code> facilite et allège l&#8217;écriture mais on perd en flexibliité</p></li></ul></div></section>
+<section id="exemple_de_squelettes"><h2>Exemple de squelettes</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@Controller
+@RequestMapping("/etudiants")
+public class EtudiantsController {
+}</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@RestController
+@RequestMapping("/etudiants")
+public class EtudiantsController {
+}</code></pre></div></div></section>
+<section id="mapping_route_mthode"><h2>Mapping route/méthode</h2><div class="ulist"><ul><li><p>On applique une des annotations dédiées sur une méthode</p><div class="ulist"><ul><li><p><code>@GetMapping</code></p></li><li><p><code>@PostMapping</code></p></li><li><p><code>@PutMapping</code></p></li><li><p><code>@DeleteMapping</code></p></li></ul></div></li><li><p>Ces annotations "héritent" de <code>@RequestMapping</code></p></li></ul></div></section>
+<section id="mapping_route_mthode_2"><h2>Mapping route/méthode</h2><div class="ulist"><ul><li><p>Si on ne précise pas la route, on mappera la route du controller (cf <code>@RequestMapping</code>)</p></li><li><p>Le paramètre par défaut est le "path"</p><div class="ulist"><ul><li><p>Il sera concéténé au path du contrôleur</p></li></ul></div></li></ul></div></section>
+<section id="mapping_route_mthode_3"><h2>Mapping route/méthode</h2><div class="ulist"><ul><li><p>On peut aussi préciser</p><div class="ulist"><ul><li><p>les headers requis avec leurs valeurs (<code>headers = { "key1=val1", "key2=val2" }</code>)</p></li><li><p>les mediatypes consommés et produits</p><div class="ulist"><ul><li><p><code>produces = "application/json"</code></p></li><li><p><code>consumes = "application/xml"</code></p></li></ul></div></li></ul></div></li></ul></div></section>
+<section id="exemple_du_requte_get"><h2>Exemple du requête GET</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@GetMapping(path = "/etudiants", consumes = "application/json")
+public List&lt;Etudiant&gt; getEtudiants() {
+    ...
+}</code></pre></div></div></section>
+<section id="gestion_des_paramtres"><h2>Gestion des paramètres</h2><div class="ulist"><ul><li><p>Deux de types de paramètres :</p><div class="ulist"><ul><li><p>Les "path params" sont inclus dans le schéma du chemin</p><div class="ulist"><ul><li><p>Exemple : <code>/etudiants/jdoe</code></p></li></ul></div></li><li><p>Les "query params" sont présents après le "?" de l&#8217;url</p><div class="ulist"><ul><li><p>Exemple : <code>/etudiants?id=jdoe</code></p></li></ul></div></li></ul></div></li></ul></div></section>
+<section id="gestion_des_paramtres_path"><h2>Gestion des paramètres - Path</h2><div class="ulist"><ul><li><p>Les "path params" sont récupérés en arguments de la méthode</p><div class="ulist"><ul><li><p>En prérequis, ils devront se trouver en placeholder dans le path</p><div class="ulist"><ul><li><p>Exemple :  <code>/etudiants/{id}</code></p></li></ul></div></li></ul></div></li></ul></div></section>
+<section id="gestion_des_paramtres_path_2"><h2>Gestion des paramètres - Path</h2><div class="ulist"><ul><li><p>Avec l&#8217;annotation <code>@PathVariable</code>. Elle prend en valeur par défaut l&#8217;identifiant mis dans le path.</p><div class="ulist"><ul><li><p>Exemple : <code>@PathVariable("id") String id</code></p></li></ul></div></li><li><p>Si la variable porte le même nom que le paramètre, il est inutile de donner le nom en argument</p><div class="ulist"><ul><li><p>Exemple : <code>@PathVariable String id</code></p></li></ul></div></li></ul></div></section>
+<section id="gestion_des_paramtres_query"><h2>Gestion des paramètres -Query</h2><div class="ulist"><ul><li><p>Les "query params" sont récupérés de la même manière</p><div class="ulist"><ul><li><p>Avec l&#8217;annotation <code>@RequestParam</code>. Elle prend en valeur par défaut l&#8217;identifiant mis dans l&#8217;url.</p><div class="ulist"><ul><li><p>Exemple : <code>@RequestParam("id") String id</code></p></li></ul></div></li><li><p>Si la variable porte le même nom que le paramètre, il est inutile de donner le nom en argument</p><div class="ulist"><ul><li><p>Exemple : <code>@RequestParam String id</code></p></li></ul></div></li></ul></div></li></ul></div></section>
+<section id="exemple_de_paramtres"><h2>Exemple de paramètres</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@GetMapping(path = "/{id}")
+public Etudiant getEtudiant(@PathVariable String id) {
+    return etudiants.get(id);
+}</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@GetMapping(params = { "id" } )
+public Etudiant getEtudiant(@RequestParam String id) {
+    return etudiants.get(id);
+}</code></pre></div></div></section>
+<section id="gestion_des_rponses_srialisation"><h2>Gestion des réponses - Sérialisation</h2><div class="ulist"><ul><li><p>La sérialisation de l&#8217;objet de retour est automatique</p><div class="ulist"><ul><li><p>Dans le cas ou il s&#8217;agit d&#8217;un type pour lequel Jackson sait faire la conversion</p><div class="ulist"><ul><li><p>Les types de bases de Java</p></li><li><p>Les Java Beans qui n&#8217;embarquent que des types de bases ou d&#8217;autres Java Beans</p></li></ul></div></li></ul></div></li></ul></div></section>
+<section id="gestion_des_rponses_object_mapper"><h2>Gestion des réponses - Object Mapper</h2><div class="ulist"><ul><li><p>Dans certains cas, la sérialisation n&#8217;est pas gérée ou pas comme on le souhaite</p></li><li><p>On créé un serializer custom</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@JsonComponent
+public class CustomEtudiantSerializer extends JsonSerializer&lt;Etudiant&gt; {
+    ....
+    @Override
+    public void serialize(
+      Etudiant e, JsonGenerator jsonGenerator, SerializerProvider serializer)
+      throws IOException, JsonProcessingException {
+        jsonGenerator.writeStartObject();
+        jsonGenerator.writeStringField("nom_prenom",
+                        e.getNom() + " " + e.getPrenom());
+        jsonGenerator.writeEndObject();
+    }</code></pre></div></div></section>
+<section id="les_requtes_post_et_put"><h2>Les requêtes POST et PUT</h2><div class="ulist"><ul><li><p>Construction identique à requête GET</p></li><li><p>On annote les méthodes avec <code>@PostMapping</code> ou <code>@PutMapping</code></p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@PostMapping
+public Etudiant creerEtudiant() { ... }</code></pre></div></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@PutMapping("/{id}")
+public Etudiant majEtudiant() { ... }</code></pre></div></div></section>
+<section id="les_requtes_delete"><h2>Les requêtes DELETE</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@DeleteMapping("/{id}")
+public void supprimerEtudiant(@PathVariable String id) { ... }</code></pre></div></div></section>
+<section id="le_corps_de_la_requte"><h2>Le corps de la requête</h2><div class="ulist"><ul><li><p>Pour les requêtes de type POST ou PUT, on souhaite récupérer le corps de la requête (le payload)</p></li><li><p>On utilise un paramètre annoté <code>@RequestBody</code></p><div class="ulist"><ul><li><p>La désérialisation est automatique</p></li><li><p>S&#8217;utilise conjointement avec <code>@PathVariable</code> ou <code>@RequestParam</code></p></li></ul></div></li></ul></div></section>
+<section id="gestion_des_erreurs"><h2>Gestion des erreurs</h2><div class="ulist"><ul><li><p>Spring va gérer un certain nombre d&#8217;erreurs nativement</p><div class="ulist"><ul><li><p>404 : la ressource n&#8217;existe pas car aucune route n&#8217;est configurée pour la servir</p></li><li><p>405 : si la méthode HTTP n&#8217;est pas gérée (POST au lieu de GET)</p></li><li><p>406 : on demande du XML en retour mais l&#8217;application n&#8217;est pas capable de le séraliser</p></li></ul></div></li></ul></div></section>
+<section id="gestion_des_erreurs_2"><h2>Gestion des erreurs</h2><div class="ulist"><ul><li><p>Si une exception est levée mais pas catchée &#8594; Erreur 5XX</p><div class="ulist"><ul><li><p>Problème car non conforme à la philisophie de REST</p></li></ul></div></li><li><p>Deux solutions</p><div class="ulist"><ul><li><p>Gestion locale à la méthode</p></li><li><p>Gestion globale à l&#8217;application</p></li></ul></div></li></ul></div></section>
+<section id="gestion_des_erreurs_exemple"><h2>Gestion des erreurs - Exemple</h2><div class="ulist"><ul><li><p>Si tout se passe bien, on va renvoyer l&#8217;étudiant qui sera sérialisé</p></li><li><p>Dans le cas de la méthode <code>getEtudiant()</code>, on va lever une <code>RuntimeException</code> de type <code>EtudiantNonTrouveException</code> si l&#8217;étudiant n&#8217;est pas connu</p></li></ul></div></section>
+<section id="gestion_des_erreurs_mthode_locale"><h2>Gestion des erreurs - Méthode locale</h2><div class="ulist"><ul><li><p>En lieu et place de l&#8217;instance à séraliser, on renverra un objet de type <code>ResponseEntity&lt;T&gt;</code></p></li><li><p>On y encapsulera l&#8217;objet que l&#8217;on aurait retourné habituellement</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@GetMapping(path = "/{id}")
+public ResponseEntity&lt;Etudiant&gt; getEtudiant(@PathVariable String id) {
+    return ResponseEntity.ok(findEtudiant(id));
+}</code></pre></div></div></section>
+<section id="gestion_des_erreurs_mthode_locale_2"><h2>Gestion des erreurs - Méthode locale</h2><div class="ulist"><ul><li><p>Si l&#8217;on rajoute la gestion de l&#8217;exception</p></li></ul></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@GetMapping(path = "/{id}")
+public ResponseEntity&lt;?&gt; getEtudiant(@PathVariable String id) {
+    try {
+        return ResponseEntity.ok(findEtudiant(id));
+    } catch(EtudiantNonTrouveException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("L'étudiant n'a pas été trouvé");
+    }
+}</code></pre></div></div></section>
+<section id="gestion_des_erreurs_mthode_globale"><h2>Gestion des erreurs - Méthode globale</h2><div class="ulist"><ul><li><p>La gestion des erreurs se fait dans une classe dédiée</p><div class="ulist"><ul><li><p>Elle est annotée <code>@RestControllerAdvice</code></p></li><li><p>On peut éventuellement cloisonner la gestion des erreurs à un package en particulier</p><div class="ulist"><ul><li><p><code>@RestControllerAdvice("org.m1.web.etudiants")</code></p></li></ul></div></li></ul></div></li></ul></div></section>
+<section id="gestion_des_erreurs_mthode_globale_2"><h2>Gestion des erreurs - Méthode globale</h2><div class="ulist"><ul><li><p>Les méthodes de la classe seront les "handlers" pour un ou plusieurs type(s) d&#8217;exception(s) en particulier</p><div class="ulist"><ul><li><p>Elles sont annotées <code>@ExceptionHandler</code></p></li><li><p>La méthode prend deux paramètres</p><div class="ulist"><ul><li><p>L&#8217;exception levée</p></li><li><p>Un objet de type WebRequest</p></li></ul></div></li><li><p>Elle renvoie une ResponseEntity</p></li></ul></div></li></ul></div></section>
+<section id="gestion_des_erreurs_mthode_globale_3"><h2>Gestion des erreurs - Méthode globale</h2><div class="listingblock"><div class="content"><pre class="highlight"><code data-noescape class="java language-java">@RestControllerAdvice
+public class EtudiantsControllerAdvice {
+
+    @ExceptionHandler(EtudiantNonTrouveException.class)
+    protected ResponseEntity&lt;Object&gt; gererLesEtudiantsNonTrouves(
+            RuntimeException e, WebRequest request) {
+        return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("L'étudiant n'a pas été trouvé");
+    }
+
+}</code></pre></div></div></section></div></div><script src="node_modules/reveal.js/lib/js/head.min.js"></script><script src="node_modules/reveal.js/js/reveal.js"></script><script>// See https://github.com/hakimel/reveal.js#configuration for a full list of configuration options
+Reveal.initialize({
+  // Display controls in the bottom right corner
+  controls: true,
+  // Display a presentation progress bar
+  progress: true,
+  // Set a per-slide timing for speaker notes, null means none
+  defaultTiming: null,
+  // Display the page number of the current slide
+  slideNumber: true,
+  // Push each slide change to the browser history
+  history: true,
+  // Enable keyboard shortcuts for navigation
+  keyboard: true,
+  // Enable the slide overview mode
+  overview: true,
+  // Vertical centering of slides
+  center: true,
+  // Enables touch navigation on devices with touch input
+  touch: true,
+  // Loop the presentation
+  loop: false,
+  // Change the presentation direction to be RTL
+  rtl: false,
+  // Randomizes the order of slides each time the presentation loads
+  shuffle: false,
+  // Turns fragments on and off globally
+  fragments: true,
+  // Flags if the presentation is running in an embedded mode,
+  // i.e. contained within a limited portion of the screen
+  embedded: false,
+  // Flags if we should show a help overlay when the questionmark
+  // key is pressed
+  help: true,
+  // Flags if speaker notes should be visible to all viewers
+  showNotes: false,
+  // Global override for autolaying embedded media (video/audio/iframe)
+  // - null: Media will only autoplay if data-autoplay is present
+  // - true: All media will autoplay, regardless of individual setting
+  // - false: No media will autoplay, regardless of individual setting
+  autoPlayMedia: null,
+  // Number of milliseconds between automatically proceeding to the
+  // next slide, disabled when set to 0, this value can be overwritten
+  // by using a data-autoslide attribute on your slides
+  autoSlide: 0,
+  // Stop auto-sliding after user input
+  autoSlideStoppable: true,
+  // Enable slide navigation via mouse wheel
+  mouseWheel: false,
+  // Hides the address bar on mobile devices
+  hideAddressBar: true,
+  // Opens links in an iframe preview overlay
+  previewLinks: false,
+  // Theme (e.g., beige, black, league, night, serif, simple, sky, solarized, white)
+  // NOTE setting the theme in the config no longer works in reveal.js 3.x
+  //theme: Reveal.getQueryHash().theme || 'black',
+  // Transition style (e.g., none, fade, slide, convex, concave, zoom)
+  transition: Reveal.getQueryHash().transition || 'slide',
+  // Transition speed (e.g., default, fast, slow)
+  transitionSpeed: 'default',
+  // Transition style for full page slide backgrounds (e.g., none, fade, slide, convex, concave, zoom)
+  backgroundTransition: 'fade',
+  // Number of slides away from the current that are visible
+  viewDistance: 3,
+  // Parallax background image (e.g., "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'")
+  parallaxBackgroundImage: '',
+  // Parallax background size in CSS syntax (e.g., "2100px 900px")
+  parallaxBackgroundSize: '',
+
+  // The "normal" size of the presentation, aspect ratio will be preserved
+  // when the presentation is scaled to fit different resolutions. Can be
+  // specified using percentage units.
+  width: 1280,
+  height: 720,
+
+  // Factor of the display size that should remain empty around the content
+  margin: 0.1,
+
+  // Bounds for smallest/largest possible scale to apply to content
+  minScale: 0.2,
+  maxScale: 1.5,
+
+  // Optional libraries used to extend on reveal.js
+  dependencies: [
+      { src: 'node_modules/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+      { src: 'node_modules/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'node_modules/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'node_modules/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'node_modules/reveal.js/plugin/zoom-js/zoom.js', async: true },
+      { src: 'node_modules/reveal.js/plugin/notes/notes.js', async: true }
+  ]
+});</script></body></html>
