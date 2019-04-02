@@ -16,6 +16,11 @@
 * link:tp3.html[TP 3]: Création d'une Api Rest avec Spring Boot
 * link:tp4.html[TP 4]: Création d'une Single Page Application avec Vue.js
 
+== Le projet
+
+* link:projet.html[Sujet du projet]: Gestion des inscriptions à l'UPPA
+
+
 == Les projets d'exemples
 
 * https://git.univ-pau.fr/m1tidevwebavance/jsp-servlet-example[JSP et Servlets]

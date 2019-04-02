@@ -64,3 +64,7 @@ L'application se décompose en deux parties :
 * Espace inscriptions
 
 Dans le cadre du projet, on ne gère pas l'authentification à l'espace gestionnaire pour plus de simplicité.
+
+== Annexes
+
+* https://github.com/jlafourc/m1-devwebavance/blob/master/ddl-oracle.sql[Script DDL Oracle]
