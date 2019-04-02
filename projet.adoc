@@ -68,3 +68,4 @@ Dans le cadre du projet, on ne gère pas l'authentification à l'espace gestionn
 == Annexes
 
 * https://github.com/jlafourc/m1-devwebavance/blob/master/ddl-oracle.sql[Script DDL Oracle]
+* https://github.com/jlafourc/m1-devwebavance/blob/master/ddl-h2.sql[Script DDL H2]
